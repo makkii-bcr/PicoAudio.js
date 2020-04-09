@@ -7,6 +7,7 @@
     "setup": "npm install",
     "all-build": "webpack && webpack --mode production && webpack --mode development && webpack --babel 0 && webpack --mode production --babel 0 && webpack --mode development --babel 0 && webpack --tonyu2 && webpack --mode production --tonyu2 && webpack --mode development --tonyu2",
     "build": "webpack && webpack --mode production && webpack --mode development",
+    "build2": "rollup -c",
     "start-server": "webpack-dev-server",
     "watch": "webpack --watch"
   },
@@ -14,12 +15,13 @@
   "author": "cagpie",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/polyfill": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "babel-loader": "^8.0.5",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "@babel/core": "^7.9.0",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "buble": "^0.20.0",
+    "rollup": "^2.3.3",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-buble": "^0.19.8"
   }
 }
