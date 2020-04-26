@@ -1,35 +1,52 @@
+import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import replace from 'rollup-plugin-replace';
 import babel from 'rollup-plugin-babel';
-import buble from 'rollup-plugin-buble';
+import {terser} from 'rollup-plugin-terser';
 
 export default [
   {
     input: 'src/main.js',
-    output: {
-      format: 'umd',
-      file: 'dist/PicoAudio-rollup.js'
-    },
+    output: [
+      {
+        file: 'dist/PicoAudio-rollup.js',
+        format: 'umd',
+        name: 'PicoAudio'
+      }
+    ],
     plugins: [
-      resolve(),
-      babel({
-        exclude: 'node_modules/**' // only transpile our source code
+      commonjs(),
+      nodeResolve(),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.DEBUG': JSON.stringify(true),
+        'process.env.TONYU2': JSON.stringify(false),
       }),
-      // buble( {
-      //   target : {
-      //     chrome: 49,
-      //     node: 4,
-      //     firefox: 45,
-      //     safari: 9,
-      //     edge: 12,
-      //     ie: 11
-      //   }
-      // } ),
-			// buble( {
-			// 	transforms: {
-			// 		arrow: false,
-			// 		classes: true
-			// 	}
-			// } )
+      babel()
+    ]
+  },
+  {
+    input: 'src/main.js',
+    output: [
+      {
+        file: 'dist/PicoAudio-rollup.min.js',
+        format: 'umd',
+        name: 'PicoAudio',
+        plugins: [
+          terser()
+        ]
+      }
+    ],
+    plugins: [
+      commonjs(),
+      nodeResolve(),
+      replace({
+        'process.env.NODE_ENV': JSON.stringify('development'),
+        'process.env.DEBUG': JSON.stringify(true),
+        'process.env.TONYU2': JSON.stringify(false),
+      }),
+      babel()
     ]
   },
 	{

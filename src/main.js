@@ -26,6 +26,7 @@ import startWebMIDI from './web-midi/start-web-midi.js'
 /**
  * MIDIをブラウザで再生するためのライブラリ
  */
+export default PicoAudio;
 class PicoAudio {
     /**
      * PicoAudioクラスのコンストラクタ
@@ -277,5 +278,5 @@ class PicoAudio {
     }
 }
 
-// PicoAudioをグローバル変数に登録
-window.PicoAudio = PicoAudio;
+// // PicoAudioをグローバル変数に登録
+// window.PicoAudio = PicoAudio;
