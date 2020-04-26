@@ -18,11 +18,11 @@ export default [
     plugins: [
       commonjs(),
       nodeResolve(),
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-        'process.env.DEBUG': JSON.stringify(true),
-        'process.env.TONYU2': JSON.stringify(false),
-      }),
+      // replace({
+      //   'process.env.NODE_ENV': JSON.stringify('development'),
+      //   'process.env.DEBUG': JSON.stringify(true),
+      //   'process.env.TONYU2': JSON.stringify(false),
+      // }),
       babel()
     ]
   },
@@ -41,11 +41,11 @@ export default [
     plugins: [
       commonjs(),
       nodeResolve(),
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-        'process.env.DEBUG': JSON.stringify(true),
-        'process.env.TONYU2': JSON.stringify(false),
-      }),
+      // replace({
+      //   'process.env.NODE_ENV': JSON.stringify('development'),
+      //   'process.env.DEBUG': JSON.stringify(true),
+      //   'process.env.TONYU2': JSON.stringify(false),
+      // }),
       babel()
     ]
   },

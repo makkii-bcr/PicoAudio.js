@@ -1,8 +1,8 @@
 function picoAudioConstructor(_audioContext, _picoAudio) {
-    this.debug = process.env.DEBUG;
+    this.debug = true;
     this.isStarted = false;
     this.isPlayed = false;
-    this.isTonyu2 = process.env.TONYU2;
+    this.isTonyu2 = true;
     this.settings = {
         masterVolume: 1,
         generateVolume: 0.15,

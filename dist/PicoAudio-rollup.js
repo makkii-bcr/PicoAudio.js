@@ -186,7 +186,7 @@
     this.debug = true;
     this.isStarted = false;
     this.isPlayed = false;
-    this.isTonyu2 = false;
+    this.isTonyu2 = true;
     this.settings = {
       masterVolume: 1,
       generateVolume: 0.15,
