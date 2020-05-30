@@ -17,24 +17,19 @@ import clearFunc from './player/stop-manager/clear-func.js';
 import getTime from './player/time/get-time.js';
 import getTiming from './player/time/get-timing.js';
 
-import PerformanceUtil from './util/performance-util.js';
-
 import parseSMF from './smf/parse-smf.js';
 
-import startWebMIDI from './web-midi/start-web-midi.js'
+import startWebMIDI from './web-midi/start-web-midi.js';
 
-/**
- * MIDIをブラウザで再生するためのライブラリ
- */
 export default PicoAudio;
+
 class PicoAudio {
     /**
      * PicoAudioクラスのコンストラクタ
-     * @param {AudioContext} audioContext 
-     * @param {PicoAudio} picoAudio 
+     * @param {PicoAudio} argsObj 
      */
-    constructor(audioContext, picoAudio) {
-        picoAudioConstructor.call(this, audioContext, picoAudio);
+    constructor(argsObj) {
+        picoAudioConstructor.call(this, argsObj);
     }
 
     /**
@@ -170,13 +165,6 @@ class PicoAudio {
         return startWebMIDI.call(this);
     }
 
-    /**
-     * パフォーマンス計測
-     */
-    measurePerformanceReverb() {
-        return PerformanceUtil.measureReverb.call(this);
-    }
-
     // インターフェース関係 //
     addEventListener(type, func) {
         // type = EventName (play, stop, noteOn...)
@@ -277,6 +265,3 @@ class PicoAudio {
         this.settings.chorusVolume = volume;
     }
 }
-
-// // PicoAudioをグローバル変数に登録
-// window.PicoAudio = PicoAudio;

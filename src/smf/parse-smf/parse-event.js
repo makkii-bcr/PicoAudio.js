@@ -29,7 +29,7 @@ export default function parseEvent(info) {
         let velocity = 100;
         let modulation = 0;
         let hold = 0;
-        let reverb = this.isTonyu2 ? 0 : 10;
+        let reverb = this.settings.initReverb;
         let chorus = 0;
         let nrpnLsb = 127;
         let nrpnMsb = 127;
@@ -328,7 +328,7 @@ export default function parseEvent(info) {
                 // If (note.cc[x].timing > lastNoteOffTiming), delete note.cc[x]
                 const nameAry = ["pitchBend", "pan", "expression", "modulation", "reverb", "chorus"];
                 nameAry.forEach((name) => {
-                    const ccAry = note[name]
+                    const ccAry = note[name];
                     for (let i2=ccAry.length-1; i2>=1; i2--) {
                         const obj = ccAry[i2];
                         if (obj.timing>lastNoteOffTiming) {

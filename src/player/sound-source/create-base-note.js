@@ -89,6 +89,7 @@ export default function createBaseNote(option, isDrum, isExpression, nonChannel,
             if (panNode.positionX) {
                 // setValueAtTimeが使える
                 // Old Browser
+                let firstPan = true;
                 option.pan ? option.pan.forEach((p) => {
                     if (firstPan) {
                         firstPan = false;

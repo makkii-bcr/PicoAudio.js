@@ -6,11 +6,8 @@
         "modules": false,
         "spec": true,
         "forceAllTransforms": true,
-        "useBuiltIns": "entry",//"usage",
-        "corejs": 3,
-        "targets": {
-          "ie": "11"
-        }
+        "useBuiltIns": "entry",
+        "corejs": 3
       }
     ]
   ]

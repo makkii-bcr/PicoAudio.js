@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <script src="PicoAudio.js"></script>
+        <script src="../dist/PicoAudio.js"></script>
     </head>
     <body>
         <input type="file" id="file"/><br>
@@ -18,7 +18,8 @@
                 fileReader.onload = function(e) {
                     smfData = new Uint8Array(fileReader.result);
                     if (typeof pAudio === "undefined") {
-                        pAudio = new PicoAudio();
+                        // pAudio = new PicoAudio(); // release
+                        pAudio = new PicoAudio({debug: true}); // debug
                         pAudio.init();
                     } else {
                         pAudio.initStatus();

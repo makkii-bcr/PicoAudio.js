@@ -24,8 +24,8 @@ export default class UpdateNote {
         const context = picoAudio.context;
         const settings = picoAudio.settings;
         const states = picoAudio.states;
-        let updateNowTime = performance.now();
-        let updatePreTime = this.updatePreTime;
+        const updateNowTime = performance.now();
+        const updatePreTime = this.updatePreTime;
         let pPreTime = this.pPreTime;
         let cPreTime = this.cPreTime;
         let pTimeSum = this.pTimeSum;
