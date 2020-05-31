@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "description": "MIDI file playing library in the Browser",
   "main": "dist/PicoAudio.js",
+  "module": "dist/PicoAudio.mjs",
   "scripts": {
     "setup": "npm install",
     "build": "rollup -c",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cagpie/PicoAudio.js.git"
   },
   "keywords": [],
   "author": "cagpie",
