@@ -5,8 +5,8 @@ export default function init(argsObj) {
     if (this.isStarted) return;
     this.isStarted = true;
 
-    const audioContext = argsObj.audioContext;
-    const picoAudio = argsObj.picoAudio;
+    const audioContext = argsObj && argsObj.audioContext;
+    const picoAudio = argsObj && argsObj.picoAudio;
 
     // AudioContextを生成 //
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -36,7 +36,7 @@ export default function init(argsObj) {
             vtBufs.push(new Float32Array(sampleLengthVT));
             const vtBuf = vtBufs[ch];
             for (let i=0; i<sampleLengthVT; i++) {
-                let r = RandomUtil.random();
+                const r = RandomUtil.random();
                 vtBuf[i] = r * 2 - 1;
             }
         }

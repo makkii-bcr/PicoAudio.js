@@ -7,7 +7,7 @@ function picoAudioConstructor(argsObj) {
     //     isSkipBeginning
     // }
 
-    this.debug = true;
+    this.debug = false;
     this.isStarted = false;
     this.isPlayed = false;
     this.settings = {
@@ -37,14 +37,14 @@ function picoAudioConstructor(argsObj) {
         isSameDrumSoundOverlap: false // 同じドラムの音が重なることを許容するか
     };
 
-    // argsObjで設定値が指定されていたら適用する
-    if (argsObj.debug != null) {
+    // argsObjで設定値が指定されていたら上書きする
+    if (argsObj && argsObj.debug != null) {
         this.debug = argsObj.debug;
     }
-    if (argsObj.initReverb != null) {
+    if (argsObj && argsObj.initReverb != null) {
         this.settings.initReverb = argsObj.initReverb;
     }
-    if (argsObj.isSkipBeginning != null) {
+    if (argsObj && argsObj.isSkipBeginning != null) {
         this.settings.isSkipBeginning = argsObj.isSkipBeginning;
     }
 
@@ -87,7 +87,7 @@ function picoAudioConstructor(argsObj) {
     }
 
     // AudioContextがある場合はそのまま初期化、なければAudioContextを用いる初期化をinit()で
-    if (argsObj.audioContext) {
+    if (argsObj && argsObj.audioContext) {
         this.init(argsObj);
     }
 
@@ -131,7 +131,7 @@ class RandomUtil {
      */
     static random() {
         if (!this.init) this.resetSeed();
-        let t = this.x ^ (this.x << 11);
+        const t = this.x ^ (this.x << 11);
         this.x = this.y; this.y = this.z; this.z = this.w;
         let r = this.w = (this.w ^ (this.w >>> 19)) ^ (t ^ (t >>> 8));
         r = Math.abs(r) / 2147483648 % 2;
@@ -184,8 +184,8 @@ function init(argsObj) {
     if (this.isStarted) return;
     this.isStarted = true;
 
-    const audioContext = argsObj.audioContext;
-    const picoAudio = argsObj.picoAudio;
+    const audioContext = argsObj && argsObj.audioContext;
+    const picoAudio = argsObj && argsObj.picoAudio;
 
     // AudioContextを生成 //
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -215,7 +215,7 @@ function init(argsObj) {
             vtBufs.push(new Float32Array(sampleLengthVT));
             const vtBuf = vtBufs[ch];
             for (let i=0; i<sampleLengthVT; i++) {
-                let r = RandomUtil.random();
+                const r = RandomUtil.random();
                 vtBuf[i] = r * 2 - 1;
             }
         }
@@ -430,7 +430,7 @@ class ParseUtil {
      * @param {number} len MIDIイベントの長さ
      */
     static chIndicesInsert(that, ch, time, p, len) {
-        let indices = ch.indices;
+        const indices = ch.indices;
 
         // デルタタイムの順番になるようにリスト配列に挿入 //
         if (ch.indicesLength >= 4 && time < indices[ch.indicesFoot]) {
@@ -856,7 +856,7 @@ function play(isSongLooping) {
 }
 
 function stop(isSongLooping) {
-    let states = this.states;
+    const states = this.states;
 
     // 再生していない場合、何もしない //
     if (states.isPlaying == false) return;
@@ -911,7 +911,7 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
     expGainNode.gain.value = expGainValue;
     if (isExpression) {
         option.expression ? option.expression.forEach((p) => {
-            let v = velocity * (p.value / 127);
+            const v = velocity * (p.value / 127);
             if (v > 0) isGainValueZero = false;
             expGainNode.gain.setValueAtTime(
                 v,
@@ -1008,7 +1008,7 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
                         this.clearFunc("pan", reservePan);
                         let v = p.value == 64 ? 0 : (p.value / 127) * 2 - 1;
                         if (v > 1.0) v = 1.0;
-                        let posObj = convPosition(v);
+                        const posObj = convPosition(v);
                         panNode.setPosition(posObj.x, posObj.y, posObj.z);
                     }, (p.time + songStartTime - context.currentTime) * 1000);
                     this.pushFunc({
@@ -2205,7 +2205,7 @@ function createPercussionNote(option) {
 }
 
 function stopAudioNode(tar, time, stopGainNode, isNoiseCut) {
-    let isImmed = time <= this.context.currentTime; // 即時ストップか？
+    const isImmed = time <= this.context.currentTime; // 即時ストップか？
 
     // 予約ストップ //
     let vol1Time = time-0.005;
@@ -2458,12 +2458,12 @@ function parseTrack(info) {
         while (p<endPoint) {
             // DeltaTime
             if (lastState != null) {
-                let lengthAry = ParseUtil.variableLengthToInt(smf, p, p+5);
+                const lengthAry = ParseUtil.variableLengthToInt(smf, p, p+5);
                 dt = lengthAry[0];
                 tick += dt;
                 p += lengthAry[1];
             }
-            let cashP = p; // WebMIDI用
+            const cashP = p; // WebMIDI用
             // Events
             const mes0 = smf[p] >> 4; // Math.floor(smf[p] / 0x10)
             switch (mes0) {
@@ -3063,7 +3063,7 @@ function startWebMIDI() {
     // 2回目：MIDIデバイスのフルコントロールがブロックされたら、SysEx無しでMIDIアクセスを要求する
     let sysEx = this.settings.WebMIDIPortSysEx;
     const midiAccessSuccess = (midiAccess) => {
-        let outputs = midiAccess.outputs;
+        const outputs = midiAccess.outputs;
         this.settings.WebMIDIPortOutputs = outputs;
         let output;
         if (this.settings.WebMIDIPort==-1) {

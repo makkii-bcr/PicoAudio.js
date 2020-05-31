@@ -16,7 +16,7 @@ export default function createBaseNote(option, isDrum, isExpression, nonChannel,
     expGainNode.gain.value = expGainValue;
     if (isExpression) {
         option.expression ? option.expression.forEach((p) => {
-            let v = velocity * (p.value / 127);
+            const v = velocity * (p.value / 127);
             if (v > 0) isGainValueZero = false;
             expGainNode.gain.setValueAtTime(
                 v,
@@ -113,7 +113,7 @@ export default function createBaseNote(option, isDrum, isExpression, nonChannel,
                         this.clearFunc("pan", reservePan);
                         let v = p.value == 64 ? 0 : (p.value / 127) * 2 - 1;
                         if (v > 1.0) v = 1.0;
-                        let posObj = convPosition(v);
+                        const posObj = convPosition(v);
                         panNode.setPosition(posObj.x, posObj.y, posObj.z);
                     }, (p.time + songStartTime - context.currentTime) * 1000);
                     this.pushFunc({

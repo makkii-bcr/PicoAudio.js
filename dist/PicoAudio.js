@@ -192,7 +192,7 @@
     //     initReverb,
     //     isSkipBeginning
     // }
-    this.debug = true;
+    this.debug = false;
     this.isStarted = false;
     this.isPlayed = false;
     this.settings = {
@@ -229,17 +229,17 @@
       // TODO 演奏データを作成してから演奏する
       isSameDrumSoundOverlap: false // 同じドラムの音が重なることを許容するか
 
-    }; // argsObjで設定値が指定されていたら適用する
+    }; // argsObjで設定値が指定されていたら上書きする
 
-    if (argsObj.debug != null) {
+    if (argsObj && argsObj.debug != null) {
       this.debug = argsObj.debug;
     }
 
-    if (argsObj.initReverb != null) {
+    if (argsObj && argsObj.initReverb != null) {
       this.settings.initReverb = argsObj.initReverb;
     }
 
-    if (argsObj.isSkipBeginning != null) {
+    if (argsObj && argsObj.isSkipBeginning != null) {
       this.settings.isSkipBeginning = argsObj.isSkipBeginning;
     }
 
@@ -294,7 +294,7 @@
     } // AudioContextがある場合はそのまま初期化、なければAudioContextを用いる初期化をinit()で
 
 
-    if (argsObj.audioContext) {
+    if (argsObj && argsObj.audioContext) {
       this.init(argsObj);
     } // Fallback
     // Unsupport performance.now()
@@ -425,8 +425,8 @@
   function init(argsObj) {
     if (this.isStarted) return;
     this.isStarted = true;
-    var audioContext = argsObj.audioContext;
-    var picoAudio = argsObj.picoAudio; // AudioContextを生成 //
+    var audioContext = argsObj && argsObj.audioContext;
+    var picoAudio = argsObj && argsObj.picoAudio; // AudioContextを生成 //
 
     var AudioContext = window.AudioContext || window.webkitAudioContext;
     this.context = audioContext ? audioContext : new AudioContext(); // マスターボリューム //

@@ -4,7 +4,7 @@ export default function startWebMIDI() {
     // 2回目：MIDIデバイスのフルコントロールがブロックされたら、SysEx無しでMIDIアクセスを要求する
     let sysEx = this.settings.WebMIDIPortSysEx;
     const midiAccessSuccess = (midiAccess) => {
-        let outputs = midiAccess.outputs;
+        const outputs = midiAccess.outputs;
         this.settings.WebMIDIPortOutputs = outputs;
         let output;
         if (this.settings.WebMIDIPort==-1) {
