@@ -36,7 +36,7 @@ export default [
 		output: [
 			{
 				format: 'esm',
-				file: 'dist/PicoAudio.mjs'
+				file: 'dist/PicoAudio.mjs' // 'dist/PicoAudio.module.js'
 			}
 		]
 	}
