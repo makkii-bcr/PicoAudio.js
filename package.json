@@ -1,20 +1,26 @@
 {
   "name": "pico-audio.js",
   "version": "1.0.0",
-  "description": "MIDI file playing library in the Browser",
+  "description": "playing MIDI on web",
   "main": "dist/PicoAudio.js",
   "module": "dist/PicoAudio.mjs",
   "scripts": {
-    "setup": "npm install",
     "build": "rollup -c",
-    "lint": "eslint src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/cagpie/PicoAudio.js.git"
   },
-  "keywords": [],
+  "keywords": [
+    "midi",
+    "smf",
+    "chiptune",
+    "web audio api",
+    "web-audio-api",
+    "web midi api",
+    "web-midi-api"
+  ],
   "author": "cagpie",
   "license": "MIT",
   "devDependencies": {
