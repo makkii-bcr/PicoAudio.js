@@ -1,5 +1,5 @@
 {
-  "name": "pico-audio.js",
+  "name": "pico-audio-js",
   "version": "1.0.0",
   "description": "playing MIDI on web",
   "main": "dist/PicoAudio.js",
