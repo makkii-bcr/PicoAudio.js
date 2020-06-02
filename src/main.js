@@ -21,8 +21,6 @@ import parseSMF from './smf/parse-smf.js';
 
 import startWebMIDI from './web-midi/start-web-midi.js';
 
-export default PicoAudio;
-
 class PicoAudio {
     /**
      * PicoAudioクラスのコンストラクタ
@@ -279,3 +277,5 @@ class PicoAudio {
         this.settings.chorusVolume = volume;
     }
 }
+
+export default PicoAudio;
