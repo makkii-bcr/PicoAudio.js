@@ -4085,11 +4085,29 @@
     }, {
       key: "addEventListener",
       value: function addEventListener(type, func) {
-        // type = EventName (play, stop, noteOn...)
+        // type = EventName (play, stop, noteOn, noteOff, songEnd)
         this.events.push({
           type: type,
           func: func
         });
+      }
+    }, {
+      key: "removeEventListener",
+      value: function removeEventListener(type, func) {
+        for (var i = this.events.length; i >= 0; i--) {
+          if (event.type == type && event.func === func) {
+            this.events.splice(i, 1);
+          }
+        }
+      }
+    }, {
+      key: "removeAllEventListener",
+      value: function removeAllEventListener(type) {
+        for (var i = this.events.length; i >= 0; i--) {
+          if (event.type == type) {
+            this.events.splice(i, 1);
+          }
+        }
       }
     }, {
       key: "fireEvent",

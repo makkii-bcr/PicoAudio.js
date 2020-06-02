@@ -3248,8 +3248,22 @@ class PicoAudio {
 
     // インターフェース関係 //
     addEventListener(type, func) {
-        // type = EventName (play, stop, noteOn...)
+        // type = EventName (play, stop, noteOn, noteOff, songEnd)
         this.events.push({type: type, func: func});
+    }
+    removeEventListener(type, func) {
+        for (let i = this.events.length; i >= 0; i--) {
+            if (event.type == type && event.func === func) {
+                this.events.splice(i, 1);
+            }
+        }
+    }
+    removeAllEventListener(type) {
+        for (let i = this.events.length; i >= 0; i--) {
+            if (event.type == type) {
+                this.events.splice(i, 1);
+            }
+        }
     }
     fireEvent(type, option) {
         this.events.forEach((event) => {
