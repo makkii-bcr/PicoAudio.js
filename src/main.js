@@ -24,7 +24,7 @@ import startWebMIDI from './web-midi/start-web-midi.js';
 class PicoAudio {
     /**
      * PicoAudioクラスのコンストラクタ
-     * @param {PicoAudio} argsObj 
+     * @param {Object} argsObj 
      */
     constructor(argsObj) {
         picoAudioConstructor.call(this, argsObj);
@@ -32,11 +32,10 @@ class PicoAudio {
 
     /**
      * 初期化・準備
-     * @param {AudioContext} audioContext 
-     * @param {PicoAudio} picoAudio 
+     * @param {Object} argsObj 
      */
-    init(audioContext, picoAudio) {
-        return init.call(this, audioContext, picoAudio);
+    init(argsObj) {
+        return init.call(this, argsObj);
     }
     
     /**
