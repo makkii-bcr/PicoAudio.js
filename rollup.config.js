@@ -21,14 +21,12 @@ export default [
       {
         file: 'dist/PicoAudio.min.js',
         format: 'umd',
-        name: 'PicoAudio',
-        plugins: [
-          terser()
-        ]
+        name: 'PicoAudio'
       }
     ],
     plugins: [
-      babel()
+      babel(),
+      terser()
     ]
   },
 	{
