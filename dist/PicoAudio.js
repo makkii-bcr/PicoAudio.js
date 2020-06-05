@@ -3905,7 +3905,7 @@
   var PicoAudio = /*#__PURE__*/function () {
     /**
      * PicoAudioクラスのコンストラクタ
-     * @param {PicoAudio} argsObj 
+     * @param {Object} argsObj 
      */
     function PicoAudio(argsObj) {
       _classCallCheck(this, PicoAudio);
@@ -3914,15 +3914,14 @@
     }
     /**
      * 初期化・準備
-     * @param {AudioContext} audioContext 
-     * @param {PicoAudio} picoAudio 
+     * @param {Object} argsObj 
      */
 
 
     _createClass(PicoAudio, [{
       key: "init",
-      value: function init$1(audioContext, picoAudio) {
-        return init.call(this, audioContext, picoAudio);
+      value: function init$1(argsObj) {
+        return init.call(this, argsObj);
       }
       /**
        * MIDIファイル(SMF)を解析する
