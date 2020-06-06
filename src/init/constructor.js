@@ -1,12 +1,12 @@
+/*
+argsObj {
+    audioContext,
+    picoAudio,
+    debug,
+    etc (pico.settings.xxx)
+}
+*/
 export default function picoAudioConstructor(argsObj) {
-    // argsObj {
-    //     audioContext,
-    //     picoAudio,
-    //     debug,
-    //     initReverb,
-    //     isSkipBeginning
-    // }
-
     this.debug = false;
     this.isStarted = false;
     this.isPlayed = false;
@@ -38,14 +38,9 @@ export default function picoAudioConstructor(argsObj) {
     };
 
     // argsObjで設定値が指定されていたら上書きする
-    if (argsObj && argsObj.debug != null) {
-        this.debug = argsObj.debug;
-    }
-    if (argsObj && argsObj.initReverb != null) {
-        this.settings.initReverb = argsObj.initReverb;
-    }
-    if (argsObj && argsObj.isSkipBeginning != null) {
-        this.settings.isSkipBeginning = argsObj.isSkipBeginning;
+    rewriteVar(this, argsObj, "debug");
+    for (let key in this.settings) {
+        rewriteVar(this.settings, argsObj, key);
     }
 
     this.events = [];
@@ -104,5 +99,12 @@ export default function picoAudioConstructor(argsObj) {
     // Unsupport Number.MAX_SAFE_INTEGER
     if (!Number.MAX_SAFE_INTEGER) {
         Number.MAX_SAFE_INTEGER = 9007199254740991;
+    }
+}
+
+function rewriteVar(dist, src, hensu) {
+    console.log(dist, src, hensu, dist[hensu], src[hensu]);
+    if (src && src[hensu] != null && dist && dist[hensu] != null) {
+        dist[hensu] = src[hensu];
     }
 }

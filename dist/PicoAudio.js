@@ -182,16 +182,17 @@
     };
   }
 
+  /*
+  argsObj {
+      audioContext,
+      picoAudio,
+      debug,
+      etc (pico.settings.xxx)
+  }
+  */
   function picoAudioConstructor(argsObj) {
     var _this = this;
 
-    // argsObj {
-    //     audioContext,
-    //     picoAudio,
-    //     debug,
-    //     initReverb,
-    //     isSkipBeginning
-    // }
     this.debug = false;
     this.isStarted = false;
     this.isPlayed = false;
@@ -231,16 +232,10 @@
 
     }; // argsObjで設定値が指定されていたら上書きする
 
-    if (argsObj && argsObj.debug != null) {
-      this.debug = argsObj.debug;
-    }
+    rewriteVar(this, argsObj, "debug");
 
-    if (argsObj && argsObj.initReverb != null) {
-      this.settings.initReverb = argsObj.initReverb;
-    }
-
-    if (argsObj && argsObj.isSkipBeginning != null) {
-      this.settings.isSkipBeginning = argsObj.isSkipBeginning;
+    for (var key in this.settings) {
+      rewriteVar(this.settings, argsObj, key);
     }
 
     this.events = [];
@@ -315,6 +310,14 @@
 
     if (!Number.MAX_SAFE_INTEGER) {
       Number.MAX_SAFE_INTEGER = 9007199254740991;
+    }
+  }
+
+  function rewriteVar(dist, src, hensu) {
+    console.log(dist, src, hensu, dist[hensu], src[hensu]);
+
+    if (src && src[hensu] != null && dist && dist[hensu] != null) {
+      dist[hensu] = src[hensu];
     }
   }
 
