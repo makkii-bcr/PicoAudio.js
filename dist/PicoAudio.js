@@ -1,8 +1,5 @@
-(function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global = global || self, global.PicoAudio = factory());
-}(this, (function () { 'use strict';
+var PicoAudio = (function () {
+  'use strict';
 
   function _typeof(obj) {
     "@babel/helpers - typeof";
@@ -141,12 +138,6 @@
     return _wrapNativeSuper(Class);
   }
 
-  function _newArrowCheck(innerThis, boundThis) {
-    if (innerThis !== boundThis) {
-      throw new TypeError("Cannot instantiate an arrow function");
-    }
-  }
-
   function _assertThisInitialized(self) {
     if (self === void 0) {
       throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -184,15 +175,13 @@
 
   /*
   argsObj {
+      debug,
       audioContext,
       picoAudio,
-      debug,
       etc (pico.settings.xxx)
   }
   */
   function picoAudioConstructor(argsObj) {
-    var _this = this;
-
     this.debug = false;
     this.isStarted = false;
     this.isPlayed = false;
@@ -241,21 +230,11 @@
     this.events = [];
     this.trigger = {
       isNoteTrigger: true,
-      play: function play() {
-        _newArrowCheck(this, _this);
-      }.bind(this),
-      stop: function stop() {
-        _newArrowCheck(this, _this);
-      }.bind(this),
-      noteOn: function noteOn() {
-        _newArrowCheck(this, _this);
-      }.bind(this),
-      noteOff: function noteOff() {
-        _newArrowCheck(this, _this);
-      }.bind(this),
-      songEnd: function songEnd() {
-        _newArrowCheck(this, _this);
-      }.bind(this)
+      play: function play() {},
+      stop: function stop() {},
+      noteOn: function noteOn() {},
+      noteOff: function noteOff() {},
+      songEnd: function songEnd() {}
     };
     this.states = {
       isPlaying: false,
@@ -301,10 +280,8 @@
 
     if (!performance.now) {
       performance.now = function () {
-        _newArrowCheck(this, _this);
-
         return Date.now();
-      }.bind(this);
+      };
     } // Unsupport Number.MAX_SAFE_INTEGER
 
 
@@ -314,8 +291,6 @@
   }
 
   function rewriteVar(dist, src, hensu) {
-    console.log(dist, src, hensu, dist[hensu], src[hensu]);
-
     if (src && src[hensu] != null && dist && dist[hensu] != null) {
       dist[hensu] = src[hensu];
     }
@@ -888,8 +863,6 @@
           var idx = states.playIndices[ch];
 
           var _loop2 = function _loop2() {
-            var _this2 = this;
-
             var note = notes[idx];
             var curTime = cnt == 0 ? _this.initCurrentTime - states.startTime : context.currentTime - states.startTime; // 終わったノートは演奏せずにスキップ
 
@@ -913,8 +886,6 @@
                 var polyCnt = 0;
                 var percCnt = 0;
                 states.stopFuncs.forEach(function (tar) {
-                  _newArrowCheck(this, _this2);
-
                   if (!tar.note) return;
 
                   if (tar.note.channel != 9) {
@@ -926,7 +897,7 @@
                       percCnt++;
                     }
                   }
-                }.bind(this));
+                });
 
                 if (note.channel != 9 && polyCnt >= settings.maxPoly || note.channel == 9 && percCnt >= settings.maxPercPoly) {
                   return "continue";
@@ -1117,12 +1088,11 @@
           if (states.webMIDIStopTime == 0) waitTime = 1000; // MIDI Portをopenして最初に呼び出すときも少し待つ
 
           setTimeout(function () {
-            _newArrowCheck(this, _this);
-
             states.webMIDIWaitState = "completed";
             states.isPlaying = false;
-            this.play();
-          }.bind(this), waitTime);
+
+            _this.play();
+          }, waitTime);
         }
 
         return;
@@ -1149,43 +1119,39 @@
 
     var reserveSongEnd;
 
-    var _reserveSongEndFunc = function reserveSongEndFunc() {
-      var _this2 = this;
+    var reserveSongEndFunc = function reserveSongEndFunc() {
+      _this.clearFunc("rootTimeout", reserveSongEnd);
 
-      _newArrowCheck(this, _this);
-
-      this.clearFunc("rootTimeout", reserveSongEnd);
-      var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number.MAX_SAFE_INTEGER);
+      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number.MAX_SAFE_INTEGER);
 
       if (finishTime - context.currentTime + states.startTime <= 0) {
         // 予定の時間以降に曲終了
         trigger.songEnd();
-        this.onSongEnd();
-        this.fireEvent('songEnd');
+
+        _this.onSongEnd();
+
+        _this.fireEvent('songEnd');
       } else {
         // 処理落ちしたりしてまだ演奏中の場合、1ms後に曲終了コールバックを呼び出すよう予約
-        reserveSongEnd = setTimeout(_reserveSongEndFunc, 1);
-        this.pushFunc({
+        reserveSongEnd = setTimeout(reserveSongEndFunc, 1);
+
+        _this.pushFunc({
           rootTimeout: reserveSongEnd,
           stopFunc: function stopFunc() {
-            _newArrowCheck(this, _this2);
-
             clearTimeout(reserveSongEnd);
-          }.bind(this)
+          }
         });
       }
-    }.bind(this);
+    };
 
     var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number.MAX_SAFE_INTEGER);
     var reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
-    reserveSongEnd = setTimeout(_reserveSongEndFunc, reserveSongEndTime);
+    reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
       rootTimeout: reserveSongEnd,
       stopFunc: function stopFunc() {
-        _newArrowCheck(this, _this);
-
         clearTimeout(reserveSongEnd);
-      }.bind(this)
+      }
     }); // 再生開始をコールバックに通知 //
 
     trigger.play();
@@ -1194,17 +1160,13 @@
     UpdateNote.init(this, currentTime); // 1ms毎コールバックを開始 //
 
     var reserve = setInterval(function () {
-      _newArrowCheck(this, _this);
-
-      UpdateNote.update(this);
-    }.bind(this), 1);
+      UpdateNote.update(_this);
+    }, 1);
     this.pushFunc({
       rootTimeout: reserve,
       stopFunc: function stopFunc() {
-        _newArrowCheck(this, _this);
-
         clearInterval(reserve);
-      }.bind(this)
+      }
     });
   }
 
@@ -1218,17 +1180,13 @@
     states.isPlaying = false;
     states.stopTime = this.context.currentTime;
     states.stopFuncs.forEach(function (n) {
-      _newArrowCheck(this, _this);
-
       // 再生中の音の停止関数を呼ぶ
       n.stopFunc();
-    }.bind(this));
+    });
     states.stopFuncs = [];
     states.playIndices.forEach(function (n, i, ary) {
-      _newArrowCheck(this, _this);
-
       ary[i] = 0;
-    }.bind(this));
+    });
     states.noteOnAry = [];
     states.noteOffAry = []; // WebMIDIで再生中の場合、停止メッセージを送信 //
 
@@ -1237,12 +1195,10 @@
       if (this.settings.WebMIDIPortOutput == null) return;
       states.webMIDIStopTime = this.context.currentTime;
       setTimeout(function () {
-        _newArrowCheck(this, _this);
-
         for (var t = 0; t < 16; t++) {
-          this.settings.WebMIDIPortOutput.send([0xB0 + t, 120, 0]);
+          _this.settings.WebMIDIPortOutput.send([0xB0 + t, 120, 0]);
         }
-      }.bind(this), 1000);
+      }, 1000);
     } // 停止をコールバックに通知 //
 
 
@@ -1271,12 +1227,10 @@
 
     if (isExpression) {
       option.expression ? option.expression.forEach(function (p) {
-        _newArrowCheck(this, _this);
-
         var v = velocity * (p.value / 127);
         if (v > 0) isGainValueZero = false;
         expGainNode.gain.setValueAtTime(v, p.time + songStartTime);
-      }.bind(this)) : false;
+      }) : false;
     } else {
       if (expGainValue > 0) {
         isGainValueZero = false;
@@ -1298,9 +1252,7 @@
     var oscillator = !isDrum ? context.createOscillator() : context.createBufferSource();
     var panNode = context.createStereoPanner ? context.createStereoPanner() : context.createPanner ? context.createPanner() : {
       pan: {
-        setValueAtTime: function setValueAtTime() {
-          _newArrowCheck(this, _this);
-        }.bind(this)
+        setValueAtTime: function setValueAtTime() {}
       }
     };
     var gainNode = context.createGain();
@@ -1312,10 +1264,8 @@
       oscillator.detune.value = 0;
       oscillator.frequency.value = pitch;
       option.pitchBend ? option.pitchBend.forEach(function (p) {
-        _newArrowCheck(this, _this);
-
         oscillator.frequency.setValueAtTime(settings.basePitch * Math.pow(Math.pow(2, 1 / 12), option.pitch - 69 + p.value), p.time + songStartTime);
-      }.bind(this)) : false;
+      }) : false;
     } else {
       oscillator.loop = true;
       oscillator.buffer = this.whitenoise;
@@ -1332,8 +1282,6 @@
       if (context.createStereoPanner) {
         // StereoPannerNode が使える
         option.pan ? option.pan.forEach(function (p) {
-          _newArrowCheck(this, _this);
-
           if (firstNode) {
             firstNode = false;
             return;
@@ -1342,7 +1290,7 @@
           var v = p.value == 64 ? 0 : p.value / 127 * 2 - 1;
           if (v > 1.0) v = 1.0;
           panNode.pan.setValueAtTime(v, p.time + songStartTime);
-        }.bind(this)) : false;
+        }) : false;
       } else if (context.createPanner) {
         // StereoPannerNode が未サポート、PannerNode が使える
         if (panNode.positionX) {
@@ -1350,8 +1298,6 @@
           // Old Browser
           var firstPan = true;
           option.pan ? option.pan.forEach(function (p) {
-            _newArrowCheck(this, _this);
-
             if (firstPan) {
               firstPan = false;
               return;
@@ -1362,38 +1308,32 @@
             panNode.positionX.setValueAtTime(posObj.x, p.time + songStartTime);
             panNode.positionY.setValueAtTime(posObj.y, p.time + songStartTime);
             panNode.positionZ.setValueAtTime(posObj.z, p.time + songStartTime);
-          }.bind(this)) : false;
+          }) : false;
         } else {
           // iOS
           // setValueAtTimeが使えないためsetTimeoutでパンの動的変更
           option.pan ? option.pan.forEach(function (p) {
-            var _this2 = this;
-
-            _newArrowCheck(this, _this);
-
             if (firstNode) {
               firstNode = false;
               return;
             }
 
             var reservePan = setTimeout(function () {
-              _newArrowCheck(this, _this2);
+              _this.clearFunc("pan", reservePan);
 
-              this.clearFunc("pan", reservePan);
               var v = p.value == 64 ? 0 : p.value / 127 * 2 - 1;
               if (v > 1.0) v = 1.0;
               var posObj = convPosition(v);
               panNode.setPosition(posObj.x, posObj.y, posObj.z);
-            }.bind(this), (p.time + songStartTime - context.currentTime) * 1000);
-            this.pushFunc({
+            }, (p.time + songStartTime - context.currentTime) * 1000);
+
+            _this.pushFunc({
               pan: reservePan,
               stopFunc: function stopFunc() {
-                _newArrowCheck(this, _this2);
-
                 clearTimeout(reservePan);
-              }.bind(this)
+              }
             });
-          }.bind(this)) : false;
+          }) : false;
         }
       }
 
@@ -1418,8 +1358,6 @@
       modulationGainNode = context.createGain();
       var _firstNode = true;
       option.modulation ? option.modulation.forEach(function (p) {
-        _newArrowCheck(this, _this);
-
         if (_firstNode) {
           _firstNode = false;
           return;
@@ -1428,7 +1366,7 @@
         var m = p.value / 127;
         if (m > 1.0) m = 1.0;
         modulationGainNode.gain.setValueAtTime(pitch * 10 / 440 * m, p.time + songStartTime);
-      }.bind(this)) : false;
+      }) : false;
       var m = option.modulation ? option.modulation[0].value / 127 : 0;
       if (m > 1.0) m = 1.0;
       modulationGainNode.gain.value = pitch * 10 / 440 * m;
@@ -1443,8 +1381,6 @@
       var convolverGainNode = context.createGain();
       var _firstNode2 = true;
       option.reverb ? option.reverb.forEach(function (p) {
-        _newArrowCheck(this, _this);
-
         if (_firstNode2) {
           _firstNode2 = false;
           return;
@@ -1453,7 +1389,7 @@
         var r = p.value / 127;
         if (r > 1.0) r = 1.0;
         convolverGainNode.gain.setValueAtTime(r, p.time + songStartTime);
-      }.bind(this)) : false;
+      }) : false;
       var r = option.reverb ? option.reverb[0].value / 127 : 0;
       if (r > 1.0) r = 1.0;
       convolverGainNode.gain.value = r;
@@ -1468,8 +1404,6 @@
       var chorusGainNode = context.createGain();
       var _firstNode3 = true;
       option.chorus ? option.chorus.forEach(function (p) {
-        _newArrowCheck(this, _this);
-
         if (_firstNode3) {
           _firstNode3 = false;
           return;
@@ -1478,7 +1412,7 @@
         var c = p.value / 127;
         if (c > 1.0) c = 1.0;
         chorusGainNode.gain.setValueAtTime(c, p.time + songStartTime);
-      }.bind(this)) : false;
+      }) : false;
       var c = option.chorus ? option.chorus[0].value / 127 : 0;
       if (c > 1.0) c = 1.0;
       chorusGainNode.gain.value = c;
@@ -1805,11 +1739,10 @@
 
 
     return function () {
-      _newArrowCheck(this, _this);
+      _this.stopAudioNode(oscillator, 0, stopGainNode, true);
 
-      this.stopAudioNode(oscillator, 0, stopGainNode, true);
-      if (note2 && note2.oscillator) this.stopAudioNode(note2.oscillator, 0, note2.stopGainNode, true);
-    }.bind(this);
+      if (note2 && note2.oscillator) _this.stopAudioNode(note2.oscillator, 0, note2.stopGainNode, true);
+    };
   }
 
   function createPercussionNote(option) {
@@ -2793,11 +2726,10 @@
     option.drumStopTime = option.startTime + (stopAudioTime >= stopAudioTime2 ? stopAudioTime : stopAudioTime2); // 音をストップさせる関数を返す //
 
     return function () {
-      _newArrowCheck(this, _this);
+      _this.stopAudioNode(source, 0, stopGainNode, true);
 
-      this.stopAudioNode(source, 0, stopGainNode, true);
-      this.stopAudioNode(oscillator, 0, stopGainNode2, true);
-    }.bind(this);
+      _this.stopAudioNode(oscillator, 0, stopGainNode2, true);
+    };
   }
 
   function stopAudioNode(tar, time, stopGainNode, isNoiseCut) {
@@ -2853,21 +2785,17 @@
   }
 
   function clearFunc(tar1, tar2) {
-    var _this = this;
-
     if (tar1 != "note" && tar1 != "rootTimeout" && tar1 != "pan" && !this.trigger.isNoteTrigger) {
       return;
     }
 
     this.states.stopFuncs.some(function (n, i, ary) {
-      _newArrowCheck(this, _this);
-
       if (n[tar1] == tar2) {
         ArrayUtil["delete"](ary, i); // ary.splice(i, 1); を高速化
 
         return true;
       }
-    }.bind(this));
+    });
   }
 
   /**
@@ -3302,8 +3230,6 @@
       var nextNoteOnAry = new Array(128);
 
       var _loop3 = function _loop3() {
-        var _this3 = this;
-
         var tick = indices[indIdx];
         var p = indices[indIdx + 2];
         var nextIdx = indices[indIdx + 3];
@@ -3374,8 +3300,6 @@
               nextNoteOnAry[smf[p + 1]] = note; // 同音ノートがノートオン中の場合、ノートオフにする //
 
               nowNoteOnIdxAry.some(function (idx, i) {
-                _newArrowCheck(this, _this3);
-
                 var note = channel.notes[idx];
 
                 if (note.pitch == smf[p + 1] && note.stop == null) {
@@ -3383,7 +3307,7 @@
                   note.stopTime = time;
                   ArrayUtil["delete"](nowNoteOnIdxAry, i); // nowNoteOnIdxAry.splice(i, 1); を軽量化
                 }
-              }.bind(this)); // ノートオン中配列に入れる
+              }); // ノートオン中配列に入れる
 
               nowNoteOnIdxAry.push(channel.notes.length); // notes一覧にnoteオブジェクトを入れる
 
@@ -3397,8 +3321,6 @@
               // ノートオフ
               // ノートオン中配列から該当ノートを探し、ノートオフ処理をする //
               nowNoteOnIdxAry.some(function (idx, i) {
-                _newArrowCheck(this, _this3);
-
                 var note = channel.notes[idx];
 
                 if (note.pitch == smf[p + 1] && note.stop == null) {
@@ -3426,7 +3348,7 @@
 
                   return true;
                 }
-              }.bind(this));
+              });
             }
 
             break;
@@ -3442,15 +3364,13 @@
                 // modulation
                 modulation = smf[p + 2];
                 nowNoteOnIdxAry.forEach(function (idx) {
-                  _newArrowCheck(this, _this3);
-
                   var note = channel.notes[idx];
                   note.modulation.push({
                     timing: tick,
                     time: time,
                     value: modulation
                   });
-                }.bind(this));
+                });
                 break;
 
               case 6:
@@ -3473,30 +3393,26 @@
                 // Pan
                 pan = smf[p + 2];
                 nowNoteOnIdxAry.forEach(function (idx) {
-                  _newArrowCheck(this, _this3);
-
                   var note = channel.notes[idx];
                   note.pan.push({
                     timing: tick,
                     time: time,
                     value: pan
                   });
-                }.bind(this));
+                });
                 break;
 
               case 11:
                 // Expression
                 expression = smf[p + 2];
                 nowNoteOnIdxAry.forEach(function (idx) {
-                  _newArrowCheck(this, _this3);
-
                   var note = channel.notes[idx];
                   note.expression.push({
                     timing: tick,
                     time: time,
                     value: expression * (masterVolume / 127)
                   });
-                }.bind(this));
+                });
                 break;
 
               case 64:
@@ -3522,30 +3438,26 @@
                 // reverb
                 reverb = smf[p + 2];
                 nowNoteOnIdxAry.forEach(function (idx) {
-                  _newArrowCheck(this, _this3);
-
                   var note = channel.notes[idx];
                   note.reverb.push({
                     timing: tick,
                     time: time,
                     value: reverb
                   });
-                }.bind(this));
+                });
                 break;
 
               case 93:
                 // chorus
                 chorus = smf[p + 2];
                 nowNoteOnIdxAry.forEach(function (idx) {
-                  _newArrowCheck(this, _this3);
-
                   var note = channel.notes[idx];
                   note.chorus.push({
                     timing: tick,
                     time: time,
                     value: chorus
                   });
-                }.bind(this));
+                });
                 break;
 
               case 98:
@@ -3589,15 +3501,13 @@
           case 0xE:
             pitchBend = (smf[p + 2] * 128 + smf[p + 1] - 8192) / 8192 * dataEntry;
             nowNoteOnIdxAry.forEach(function (idx) {
-              _newArrowCheck(this, _this3);
-
               var note = channel.notes[idx];
               note.pitchBend.push({
                 timing: tick,
                 time: time,
                 value: pitchBend
               });
-            }.bind(this));
+            });
             break;
 
           case 0xF:
@@ -3611,15 +3521,13 @@
                   if (vol > 127) vol = 127;
                   masterVolume = vol;
                   nowNoteOnIdxAry.forEach(function (idx) {
-                    _newArrowCheck(this, _this3);
-
                     var note = channel.notes[idx];
                     note.expression.push({
                       timing: tick,
                       time: time,
                       value: expression * (masterVolume / 127)
                     });
-                  }.bind(this));
+                  });
                 }
 
                 break;
@@ -3678,8 +3586,6 @@
       var nowNoteOnIdxAry = channel.nowNoteOnIdxAry;
 
       var _loop2 = function _loop2(i) {
-        var _this2 = this;
-
         var note = channel.notes[nowNoteOnIdxAry[i]];
 
         if (note.stop == null) {
@@ -3688,8 +3594,6 @@
 
           var nameAry = ["pitchBend", "pan", "expression", "modulation", "reverb", "chorus"];
           nameAry.forEach(function (name) {
-            _newArrowCheck(this, _this2);
-
             var ccAry = note[name];
 
             for (var i2 = ccAry.length - 1; i2 >= 1; i2--) {
@@ -3699,7 +3603,7 @@
                 ArrayUtil["delete"](ccAry, i2); // ccAry.splice(i2, 1); を軽量化
               }
             }
-          }.bind(this));
+          });
           ArrayUtil["delete"](nowNoteOnIdxAry, i); // nowNoteOnIdxAry.splice(i, 1); を軽量化
         }
       };
@@ -3846,63 +3750,55 @@
     var sysEx = this.settings.WebMIDIPortSysEx;
 
     var midiAccessSuccess = function midiAccessSuccess(midiAccess) {
-      var _this2 = this;
-
-      _newArrowCheck(this, _this);
-
       var outputs = midiAccess.outputs;
-      this.settings.WebMIDIPortOutputs = outputs;
+      _this.settings.WebMIDIPortOutputs = outputs;
       var output;
 
-      if (this.settings.WebMIDIPort == -1) {
-        this.settings.WebMIDIPortOutputs.forEach(function (o) {
-          _newArrowCheck(this, _this2);
-
+      if (_this.settings.WebMIDIPort == -1) {
+        _this.settings.WebMIDIPortOutputs.forEach(function (o) {
           if (!output) output = o;
-        }.bind(this));
+        });
       } else {
-        output = this.settings.WebMIDIPortOutputs.get(this.settings.WebMIDIPort);
+        output = _this.settings.WebMIDIPortOutputs.get(_this.settings.WebMIDIPort);
       }
 
-      this.settings.WebMIDIPortOutput = output;
-      this.settings.WebMIDIPortSysEx = sysEx;
+      _this.settings.WebMIDIPortOutput = output;
+      _this.settings.WebMIDIPortSysEx = sysEx;
 
       if (output) {
         output.open();
-        this.initStatus(); // リセットイベント（GMシステム・オン等）を送るため呼び出す
+
+        _this.initStatus(); // リセットイベント（GMシステム・オン等）を送るため呼び出す
+
       }
 
       return outputs;
-    }.bind(this);
+    };
 
-    var _midiAccessFailure = function midiAccessFailure(err) {
-      _newArrowCheck(this, _this);
-
+    var midiAccessFailure = function midiAccessFailure(err) {
       console.log(err);
 
       if (sysEx) {
         sysEx = false;
         navigator.requestMIDIAccess({
           sysex: sysEx
-        }).then(midiAccessSuccess)["catch"](_midiAccessFailure);
+        }).then(midiAccessSuccess)["catch"](midiAccessFailure);
       }
-    }.bind(this);
+    };
 
     navigator.requestMIDIAccess({
       sysex: sysEx
-    }).then(midiAccessSuccess)["catch"](_midiAccessFailure); // 終了時に鳴らしている音を切る
+    }).then(midiAccessSuccess)["catch"](midiAccessFailure); // 終了時に鳴らしている音を切る
 
     window.addEventListener('unload', function () {
-      _newArrowCheck(this, _this);
-
       for (var t = 0; t < 16; t++) {
-        this.settings.WebMIDIPortOutput.send([0xB0 + t, 120, 0]);
+        _this.settings.WebMIDIPortOutput.send([0xB0 + t, 120, 0]);
 
         for (var i = 0; i < 128; i++) {
-          this.settings.WebMIDIPortOutput.send([0x80 + t, i, 0]);
+          _this.settings.WebMIDIPortOutput.send([0x80 + t, i, 0]);
         }
       }
-    }.bind(this));
+    });
   }
 
   var PicoAudio = /*#__PURE__*/function () {
@@ -4114,11 +4010,7 @@
     }, {
       key: "fireEvent",
       value: function fireEvent(type, option) {
-        var _this = this;
-
         this.events.forEach(function (event) {
-          _newArrowCheck(this, _this);
-
           if (event.type == type) {
             try {
               event.func(option);
@@ -4126,7 +4018,7 @@
               console.log(e);
             }
           }
-        }.bind(this));
+        });
       }
     }, {
       key: "getChannels",
@@ -4136,13 +4028,11 @@
     }, {
       key: "setChannels",
       value: function setChannels(channels) {
-        var _this2 = this;
+        var _this = this;
 
         channels.forEach(function (channel, idx) {
-          _newArrowCheck(this, _this2);
-
-          this.channels[idx] = channel;
-        }.bind(this));
+          _this.channels[idx] = channel;
+        });
       }
     }, {
       key: "initChannels",
@@ -4270,4 +4160,4 @@
 
   return PicoAudio;
 
-})));
+}());

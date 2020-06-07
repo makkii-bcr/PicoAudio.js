@@ -1,5 +1,9 @@
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import {terser} from 'rollup-plugin-terser';
+
+const babelParam = {
+  babelHelpers: 'bundled'
+};
 
 export default [
   {
@@ -7,12 +11,12 @@ export default [
     output: [
       {
         file: 'dist/PicoAudio.js',
-        format: 'umd',
+        format: 'iife',
         name: 'PicoAudio'
       }
     ],
     plugins: [
-      babel()
+      babel(babelParam),
     ]
   },
   {
@@ -20,12 +24,12 @@ export default [
     output: [
       {
         file: 'dist/PicoAudio.min.js',
-        format: 'umd',
+        format: 'iife',
         name: 'PicoAudio'
       }
     ],
     plugins: [
-      babel(),
+      babel(babelParam),
       terser()
     ]
   },

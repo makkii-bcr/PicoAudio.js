@@ -1,8 +1,8 @@
 /*
 argsObj {
+    debug,
     audioContext,
     picoAudio,
-    debug,
     etc (pico.settings.xxx)
 }
 */
@@ -103,7 +103,6 @@ function picoAudioConstructor(argsObj) {
 }
 
 function rewriteVar(dist, src, hensu) {
-    console.log(dist, src, hensu, dist[hensu], src[hensu]);
     if (src && src[hensu] != null && dist && dist[hensu] != null) {
         dist[hensu] = src[hensu];
     }
