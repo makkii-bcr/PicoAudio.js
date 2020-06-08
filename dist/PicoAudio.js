@@ -275,13 +275,15 @@ var PicoAudio = (function () {
 
 
     if (typeof performance === "undefined") {
-      window.performance = {};
-    }
+      if (typeof window === "undefined") {
+        window.performance = {};
+      }
 
-    if (!performance.now) {
-      performance.now = function () {
-        return Date.now();
-      };
+      if (!performance.now) {
+        performance.now = function () {
+          return Date.now();
+        };
+      }
     } // Unsupport Number.MAX_SAFE_INTEGER
 
 

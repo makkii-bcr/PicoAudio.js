@@ -89,12 +89,14 @@ export default function picoAudioConstructor(argsObj) {
     // Fallback
     // Unsupport performance.now()
     if (typeof performance === "undefined") {
-        window.performance = {};
-    }
-    if (!performance.now) {
-        performance.now = () => {
-            return Date.now();
-        };
+        if (typeof window === "undefined") {
+            window.performance = {};
+        }
+        if (!performance.now) {
+            performance.now = () => {
+                return Date.now();
+            };
+        }
     }
     // Unsupport Number.MAX_SAFE_INTEGER
     if (!Number.MAX_SAFE_INTEGER) {

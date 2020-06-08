@@ -38,8 +38,8 @@ export default [
 		input: 'src/main.js',
 		output: [
 			{
-				format: 'esm',
-				file: 'dist/PicoAudio.mjs'
+				file: 'dist/PicoAudio.mjs',
+				format: 'esm'
 			}
 		]
 	}
