@@ -1,4 +1,5 @@
 import ArrayUtil from '../../util/array-util.js';
+import {Number} from '../../util/ponyfill.js';
 
 export default function parseEvent(info) {
     // 関数呼び出し元からデータをもらう //

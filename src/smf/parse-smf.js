@@ -1,6 +1,7 @@
 import parseHeader from './parse-smf/parse-header.js';
 import parseTrack from './parse-smf/parse-track.js';
 import parseEvent from './parse-smf/parse-event.js';
+import {performance} from '../util/ponyfill.js';
 
 export default function parseSMF(_smf) {
     if (this.debug) {

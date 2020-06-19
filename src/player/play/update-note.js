@@ -1,5 +1,6 @@
 import ArrayUtil from '../../util/array-util.js';
 import ParseUtil from '../../util/parse-util.js';
+import {performance} from '../../util/ponyfill.js';
 
 export default class UpdateNote {
     /**

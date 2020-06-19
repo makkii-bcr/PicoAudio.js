@@ -178,7 +178,7 @@ var PicoAudio = (function () {
       debug,
       audioContext,
       picoAudio,
-      etc (pico.settings.xxx)
+      etc (this.settings.xxx)
   }
   */
   function picoAudioConstructor(argsObj) {
@@ -270,25 +270,6 @@ var PicoAudio = (function () {
 
     if (argsObj && argsObj.audioContext) {
       this.init(argsObj);
-    } // Fallback
-    // Unsupport performance.now()
-
-
-    if (typeof performance === "undefined") {
-      if (typeof window === "undefined") {
-        window.performance = {};
-      }
-
-      if (!performance.now) {
-        performance.now = function () {
-          return Date.now();
-        };
-      }
-    } // Unsupport Number.MAX_SAFE_INTEGER
-
-
-    if (!Number.MAX_SAFE_INTEGER) {
-      Number.MAX_SAFE_INTEGER = 9007199254740991;
     }
   }
 
@@ -506,6 +487,48 @@ var PicoAudio = (function () {
     this.masterGainNode.connect(this.context.destination);
     this.chorusOscillator.start(0);
   }
+
+  var performance = /*#__PURE__*/function () {
+    function performance() {
+      _classCallCheck(this, performance);
+    }
+
+    _createClass(performance, [{
+      key: "now",
+      value: function now() {
+        // Unsupport performance.now()
+        if (this._now == null) {
+          if (typeof performance === "undefined") {
+            this._now = function () {
+              return Date.now();
+            };
+          } else {
+            this._now = function () {
+              return performance.now();
+            };
+          }
+        }
+
+        return this._now();
+      }
+    }]);
+
+    return performance;
+  }();
+  var Number$1 = /*#__PURE__*/function () {
+    function Number() {
+      _classCallCheck(this, Number);
+    }
+
+    _createClass(Number, [{
+      key: "MAX_SAFE_INTEGER",
+      get: function get() {
+        return 0x1FFFFFFFFFFFFF;
+      }
+    }]);
+
+    return Number;
+  }();
 
   function setData(data) {
     if (this.debug) {
@@ -1124,7 +1147,7 @@ var PicoAudio = (function () {
     var reserveSongEndFunc = function reserveSongEndFunc() {
       _this.clearFunc("rootTimeout", reserveSongEnd);
 
-      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number.MAX_SAFE_INTEGER);
+      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number$1.MAX_SAFE_INTEGER);
 
       if (finishTime - context.currentTime + states.startTime <= 0) {
         // 予定の時間以降に曲終了
@@ -1146,7 +1169,7 @@ var PicoAudio = (function () {
       }
     };
 
-    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number.MAX_SAFE_INTEGER);
+    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER);
     var reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -3199,9 +3222,9 @@ var PicoAudio = (function () {
     var tempoCurTime;
     var cc111Tick = -1;
     var cc111Time = -1;
-    var firstNoteOnTiming = Number.MAX_SAFE_INTEGER; // 最初のノートオンのTick
+    var firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER; // 最初のノートオンのTick
 
-    var firstNoteOnTime = Number.MAX_SAFE_INTEGER;
+    var firstNoteOnTime = Number$1.MAX_SAFE_INTEGER;
     var lastNoteOffTiming = 0; // 最後のノートオフのTick
 
     var lastNoteOffTime = 0; // Midi Events (0x8n - 0xEn) parse
@@ -3875,6 +3898,11 @@ var PicoAudio = (function () {
       key: "initStatus",
       value: function initStatus$1(_isSongLooping, _isLight) {
         return initStatus.call(this, _isSongLooping, _isLight);
+      }
+    }, {
+      key: "setStartTime",
+      value: function setStartTime(offset) {
+        this.states.startTime -= offset;
       } // 時関関係 //
 
       /**
@@ -3938,35 +3966,16 @@ var PicoAudio = (function () {
         return createPercussionNote.call(this, option);
       } // 停止管理関係 //
 
-      /**
-       * 各々のNoteの音停止処理
-       * @param {Object} tar 
-       * @param {number} time 
-       * @param {Object} stopGainNode 
-       * @param {boolean} isNoiseCut 
-       */
-
     }, {
       key: "stopAudioNode",
       value: function stopAudioNode$1(tar, time, stopGainNode, isNoiseCut) {
         return stopAudioNode.call(this, tar, time, stopGainNode, isNoiseCut);
       }
-      /**
-       * stop()するときに実行するコールバック等を登録
-       * @param {Object} tar 
-       */
-
     }, {
       key: "pushFunc",
       value: function pushFunc$1(tar) {
         return pushFunc.call(this, tar);
       }
-      /**
-       * pushFunc()で予約したコールバック等を削除する
-       * @param {Object} tar1 
-       * @param {Object} tar2 
-       */
-
     }, {
       key: "clearFunc",
       value: function clearFunc$1(tar1, tar2) {
@@ -4023,8 +4032,8 @@ var PicoAudio = (function () {
         });
       }
     }, {
-      key: "getChannels",
-      value: function getChannels() {
+      key: "gethannels",
+      value: function gethannels() {
         return this.channels;
       }
     }, {
@@ -4058,41 +4067,6 @@ var PicoAudio = (function () {
         }
       }
     }, {
-      key: "isLoop",
-      value: function isLoop() {
-        return this.settings.loop;
-      }
-    }, {
-      key: "setLoop",
-      value: function setLoop(loop) {
-        this.settings.loop = loop;
-      }
-    }, {
-      key: "isWebMIDI",
-      value: function isWebMIDI() {
-        return this.settings.isWebMIDI;
-      }
-    }, {
-      key: "setWebMIDI",
-      value: function setWebMIDI(enable) {
-        this.settings.isWebMIDI = enable;
-      }
-    }, {
-      key: "isCC111",
-      value: function isCC111() {
-        return this.settings.isCC111;
-      }
-    }, {
-      key: "setCC111",
-      value: function setCC111(enable) {
-        this.settings.isCC111 = enable;
-      }
-    }, {
-      key: "setStartTime",
-      value: function setStartTime(offset) {
-        this.states.startTime -= offset;
-      }
-    }, {
       key: "setOnSongEndListener",
       value: function setOnSongEndListener(listener) {
         this.onSongEndListener = listener;
@@ -4114,46 +4088,6 @@ var PicoAudio = (function () {
 
           this.play(true);
         }
-      }
-    }, {
-      key: "isReverb",
-      value: function isReverb() {
-        return this.settings.isReverb;
-      }
-    }, {
-      key: "setReverb",
-      value: function setReverb(enable) {
-        this.settings.isReverb = enable;
-      }
-    }, {
-      key: "getReverbVolume",
-      value: function getReverbVolume() {
-        return this.settings.reverbVolume;
-      }
-    }, {
-      key: "setReverbVolume",
-      value: function setReverbVolume(volume) {
-        this.settings.reverbVolume = volume;
-      }
-    }, {
-      key: "isChorus",
-      value: function isChorus() {
-        return this.settings.isChorus;
-      }
-    }, {
-      key: "setChorus",
-      value: function setChorus(enable) {
-        this.settings.isChorus = enable;
-      }
-    }, {
-      key: "getChorusVolume",
-      value: function getChorusVolume() {
-        return this.settings.chorusVolume;
-      }
-    }, {
-      key: "setChorusVolume",
-      value: function setChorusVolume(volume) {
-        this.settings.chorusVolume = volume;
       }
     }]);
 

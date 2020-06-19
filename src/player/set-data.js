@@ -1,3 +1,5 @@
+import {performance} from '../util/ponyfill.js';
+
 export default function setData(data) {
     if (this.debug) {
         var syoriTimeS = performance.now();

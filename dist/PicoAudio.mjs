@@ -3,7 +3,7 @@ argsObj {
     debug,
     audioContext,
     picoAudio,
-    etc (pico.settings.xxx)
+    etc (this.settings.xxx)
 }
 */
 function picoAudioConstructor(argsObj) {
@@ -84,23 +84,6 @@ function picoAudioConstructor(argsObj) {
     // AudioContextがある場合はそのまま初期化、なければAudioContextを用いる初期化をinit()で
     if (argsObj && argsObj.audioContext) {
         this.init(argsObj);
-    }
-
-    // Fallback
-    // Unsupport performance.now()
-    if (typeof performance === "undefined") {
-        if (typeof window === "undefined") {
-            window.performance = {};
-        }
-        if (!performance.now) {
-            performance.now = () => {
-                return Date.now();
-            };
-        }
-    }
-    // Unsupport Number.MAX_SAFE_INTEGER
-    if (!Number.MAX_SAFE_INTEGER) {
-        Number.MAX_SAFE_INTEGER = 9007199254740991;
     }
 }
 
@@ -282,6 +265,24 @@ function init(argsObj) {
     this.chorusGainNode.connect(this.masterGainNode);
     this.masterGainNode.connect(this.context.destination);
     this.chorusOscillator.start(0);
+}
+
+class performance {
+    now() {
+        // Unsupport performance.now()
+        if (this._now == null) {
+            if (typeof performance === "undefined") {
+                this._now = () => { return Date.now(); };
+            } else {
+                this._now = () => { return performance.now(); };
+            }
+        }
+        return this._now();
+    }
+}
+
+class Number$1 {
+    get MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
 }
 
 function setData(data) {
@@ -816,7 +817,7 @@ function play(isSongLooping) {
     let reserveSongEnd;
     const reserveSongEndFunc = () => {
         this.clearFunc("rootTimeout", reserveSongEnd);
-        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number.MAX_SAFE_INTEGER);
+        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER);
         if (finishTime - context.currentTime + states.startTime <= 0) {
             // 予定の時間以降に曲終了
             trigger.songEnd();
@@ -833,7 +834,7 @@ function play(isSongLooping) {
     };
     const finishTime = settings.isCC111 && this.cc111Time != -1
         ? this.lastNoteOffTime
-        : this.getTime(Number.MAX_SAFE_INTEGER);
+        : this.getTime(Number$1.MAX_SAFE_INTEGER);
     const reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -2629,8 +2630,8 @@ function parseEvent(info) {
     let tempoCurTime;
     let cc111Tick = -1;
     let cc111Time = -1;
-    let firstNoteOnTiming = Number.MAX_SAFE_INTEGER; // 最初のノートオンのTick
-    let firstNoteOnTime = Number.MAX_SAFE_INTEGER;
+    let firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER; // 最初のノートオンのTick
+    let firstNoteOnTime = Number$1.MAX_SAFE_INTEGER;
     let lastNoteOffTiming = 0; // 最後のノートオフのTick
     let lastNoteOffTime = 0;
 
@@ -3166,6 +3167,10 @@ class PicoAudio {
         return initStatus.call(this, _isSongLooping, _isLight);
     }
 
+    setStartTime(offset) {
+        this.states.startTime -= offset;
+    }
+
     // 時関関係 //
     /**
      * tickからtime(秒)を求める
@@ -3215,28 +3220,12 @@ class PicoAudio {
     }
 
     // 停止管理関係 //
-    /**
-     * 各々のNoteの音停止処理
-     * @param {Object} tar 
-     * @param {number} time 
-     * @param {Object} stopGainNode 
-     * @param {boolean} isNoiseCut 
-     */
     stopAudioNode(tar, time, stopGainNode, isNoiseCut) {
         return stopAudioNode.call(this, tar, time, stopGainNode, isNoiseCut);
     }
-    /**
-     * stop()するときに実行するコールバック等を登録
-     * @param {Object} tar 
-     */
     pushFunc(tar) {
         return pushFunc.call(this, tar);
     }
-    /**
-     * pushFunc()で予約したコールバック等を削除する
-     * @param {Object} tar1 
-     * @param {Object} tar2 
-     */
     clearFunc(tar1, tar2) {
         return clearFunc.call(this, tar1, tar2);
     }
@@ -3278,9 +3267,7 @@ class PicoAudio {
             }
         });
     }
-    getChannels() {
-        return this.channels;
-    }
+    gethannels() { return this.channels; }
     setChannels(channels) {
         channels.forEach((channel, idx) => {
             this.channels[idx] = channel;
@@ -3291,39 +3278,14 @@ class PicoAudio {
             this.channels[i] = [0,0,1];
         }
     }
-    getMasterVolume() {
-        return this.settings.masterVolume;
-    }
+    getMasterVolume() { return this.settings.masterVolume; }
     setMasterVolume(volume) {
         this.settings.masterVolume = volume;
         if (this.isStarted) {
             this.masterGainNode.gain.value = this.settings.masterVolume;
         }
     }
-    isLoop() {
-        return this.settings.loop;
-    }
-    setLoop(loop) {
-        this.settings.loop = loop;
-    }
-    isWebMIDI() {
-        return this.settings.isWebMIDI;
-    }
-    setWebMIDI(enable) {
-        this.settings.isWebMIDI = enable;
-    }
-    isCC111() {
-        return this.settings.isCC111;
-    }
-    setCC111(enable) {
-        this.settings.isCC111 = enable;
-    }
-    setStartTime(offset) {
-        this.states.startTime -= offset;
-    }
-    setOnSongEndListener(listener) {
-        this.onSongEndListener = listener;
-    }
+    setOnSongEndListener(listener) { this.onSongEndListener = listener; }
     onSongEnd() {
         if (this.onSongEndListener) {
             const isStopFunc = this.onSongEndListener();
@@ -3336,30 +3298,6 @@ class PicoAudio {
             }
             this.play(true);
         }
-    }
-    isReverb() {
-        return this.settings.isReverb;
-    }
-    setReverb(enable) {
-        this.settings.isReverb = enable;
-    }
-    getReverbVolume() {
-        return this.settings.reverbVolume;
-    }
-    setReverbVolume(volume) {
-        this.settings.reverbVolume = volume;
-    }
-    isChorus() {
-        return this.settings.isChorus;
-    }
-    setChorus(enable) {
-        this.settings.isChorus = enable;
-    }
-    getChorusVolume() {
-        return this.settings.chorusVolume;
-    }
-    setChorusVolume(volume) {
-        this.settings.chorusVolume = volume;
     }
 }
 

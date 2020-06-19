@@ -3,7 +3,7 @@ argsObj {
     debug,
     audioContext,
     picoAudio,
-    etc (pico.settings.xxx)
+    etc (this.settings.xxx)
 }
 */
 export default function picoAudioConstructor(argsObj) {
@@ -84,23 +84,6 @@ export default function picoAudioConstructor(argsObj) {
     // AudioContextがある場合はそのまま初期化、なければAudioContextを用いる初期化をinit()で
     if (argsObj && argsObj.audioContext) {
         this.init(argsObj);
-    }
-
-    // Fallback
-    // Unsupport performance.now()
-    if (typeof performance === "undefined") {
-        if (typeof window === "undefined") {
-            window.performance = {};
-        }
-        if (!performance.now) {
-            performance.now = () => {
-                return Date.now();
-            };
-        }
-    }
-    // Unsupport Number.MAX_SAFE_INTEGER
-    if (!Number.MAX_SAFE_INTEGER) {
-        Number.MAX_SAFE_INTEGER = 9007199254740991;
     }
 }
 

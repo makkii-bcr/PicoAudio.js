@@ -1,4 +1,5 @@
 import UpdateNote from './play/update-note.js';
+import {Number} from '../util/ponyfill.js';
 
 export default function play(isSongLooping) {
     const context = this.context;
