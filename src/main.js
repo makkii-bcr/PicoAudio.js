@@ -197,7 +197,13 @@ class PicoAudio {
         if (this.isStarted) {
             this.masterGainNode.gain.value = this.settings.masterVolume;
         }
-    }
+    } 
+    isLoop() { return this.settings.loop; }
+    setLoop(loop) { this.settings.loop = loop; }
+    isWebMIDI() { return this.settings.isWebMIDI; }
+    setWebMIDI(enable) { this.settings.isWebMIDI = enable; }
+    isCC111() { return this.settings.isCC111; }
+    setCC111(enable) { this.settings.isCC111 = enable; }
     setOnSongEndListener(listener) { this.onSongEndListener = listener; }
     onSongEnd() {
         if (this.onSongEndListener) {

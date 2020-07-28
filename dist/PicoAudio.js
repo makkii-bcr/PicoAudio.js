@@ -887,7 +887,7 @@ var PicoAudio = (function () {
           var notes = picoAudio.playData.channels[ch].notes;
           var idx = states.playIndices[ch];
 
-          var _loop2 = function _loop2() {
+          var _loop = function _loop() {
             var note = notes[idx];
             var curTime = cnt == 0 ? _this.initCurrentTime - states.startTime : context.currentTime - states.startTime; // 終わったノートは演奏せずにスキップ
 
@@ -942,16 +942,11 @@ var PicoAudio = (function () {
             states.noteOnAry.push(note);
           };
 
-          _loop: for (; idx < notes.length; idx++) {
-            var _ret = _loop2();
+          for (; idx < notes.length; idx++) {
+            var _ret = _loop();
 
-            switch (_ret) {
-              case "continue":
-                continue;
-
-              case "break":
-                break _loop;
-            }
+            if (_ret === "continue") continue;
+            if (_ret === "break") break;
           } // notesのどこまで再生したかを記憶して、次回コールバック時にそこから処理を始める
 
 
@@ -4065,6 +4060,36 @@ var PicoAudio = (function () {
         if (this.isStarted) {
           this.masterGainNode.gain.value = this.settings.masterVolume;
         }
+      }
+    }, {
+      key: "isLoop",
+      value: function isLoop() {
+        return this.settings.loop;
+      }
+    }, {
+      key: "setLoop",
+      value: function setLoop(loop) {
+        this.settings.loop = loop;
+      }
+    }, {
+      key: "isWebMIDI",
+      value: function isWebMIDI() {
+        return this.settings.isWebMIDI;
+      }
+    }, {
+      key: "setWebMIDI",
+      value: function setWebMIDI(enable) {
+        this.settings.isWebMIDI = enable;
+      }
+    }, {
+      key: "isCC111",
+      value: function isCC111() {
+        return this.settings.isCC111;
+      }
+    }, {
+      key: "setCC111",
+      value: function setCC111(enable) {
+        this.settings.isCC111 = enable;
       }
     }, {
       key: "setOnSongEndListener",
