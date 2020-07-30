@@ -39,13 +39,13 @@ export default [
       sourcemaps()
     ]
   },
-	{
-		input: 'src/main.js',
-		output: [
-			{
-				file: 'dist/PicoAudio.mjs',
-				format: 'esm'
-			}
-		]
-	}
+  {
+    input: 'src/main.js',
+    output: [
+      {
+        file: 'dist/PicoAudio.mjs',
+        format: 'esm'
+      }
+    ]
+  }
 ];
