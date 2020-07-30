@@ -1,14 +1,14 @@
 import ArrayUtil from '../../util/array-util.js';
 import ParseUtil from '../../util/parse-util.js';
-import {performance} from '../../util/ponyfill.js';
+import {Performance} from '../../util/ponyfill.js';
 
 export default class UpdateNote {
     /**
      * 1ms毎処理用の変数を初期化
      */
     static init(picoAudio, currentTime) {
-        this.updatePreTime = performance.now();
-        this.pPreTime = performance.now();
+        this.updatePreTime = Performance.now();
+        this.pPreTime = Performance.now();
         this.cPreTime = picoAudio.context.currentTime * 1000;
         this.pTimeSum = 0;
         this.cTimeSum = 0;
@@ -25,7 +25,7 @@ export default class UpdateNote {
         const context = picoAudio.context;
         const settings = picoAudio.settings;
         const states = picoAudio.states;
-        const updateNowTime = performance.now();
+        const updateNowTime = Performance.now();
         const updatePreTime = this.updatePreTime;
         let pPreTime = this.pPreTime;
         let cPreTime = this.cPreTime;
@@ -211,14 +211,14 @@ export default class UpdateNote {
                                 for (let i=0; i<size; i++)
                                     webMIDIMes[i+1] = smfData[sysExStartP + i];
                                 settings.WebMIDIPortOutput.send(webMIDIMes,
-                                    (time - context.currentTime + window.performance.now()/1000 + states.startTime) * 1000);
+                                    (time - context.currentTime + Performance.now()/1000 + states.startTime) * 1000);
                             }
                         } else {
                             // sysEx以外のMIDIメッセージ
                             const sendMes = [];
                             for (let i=0; i<pLen; i++) sendMes.push(smfData[p+i]);
                             settings.WebMIDIPortOutput.send(sendMes,
-                                (time - context.currentTime + window.performance.now()/1000 + states.startTime) * 1000);
+                                (time - context.currentTime + Performance.now()/1000 + states.startTime) * 1000);
                         }
                     } catch(e) {
                         console.log(e, p, pLen, time, state);

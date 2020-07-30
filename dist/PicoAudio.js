@@ -488,23 +488,23 @@ var PicoAudio = (function () {
     this.chorusOscillator.start(0);
   }
 
-  var performance = /*#__PURE__*/function () {
-    function performance() {
-      _classCallCheck(this, performance);
+  var Performance = /*#__PURE__*/function () {
+    function Performance() {
+      _classCallCheck(this, Performance);
     }
 
-    _createClass(performance, [{
+    _createClass(Performance, null, [{
       key: "now",
       value: function now() {
         // Unsupport performance.now()
         if (this._now == null) {
-          if (typeof performance === "undefined") {
+          if (typeof window.performance === "undefined") {
             this._now = function () {
-              return Date.now();
+              return window.Date.now();
             };
           } else {
             this._now = function () {
-              return performance.now();
+              return window.performance.now();
             };
           }
         }
@@ -513,16 +513,16 @@ var PicoAudio = (function () {
       }
     }]);
 
-    return performance;
+    return Performance;
   }();
   var Number$1 = /*#__PURE__*/function () {
     function Number() {
       _classCallCheck(this, Number);
     }
 
-    _createClass(Number, [{
+    _createClass(Number, null, [{
       key: "MAX_SAFE_INTEGER",
-      get: function get() {
+      value: function MAX_SAFE_INTEGER() {
         return 0x1FFFFFFFFFFFFF;
       }
     }]);
@@ -532,7 +532,7 @@ var PicoAudio = (function () {
 
   function setData(data) {
     if (this.debug) {
-      var syoriTimeS = performance.now();
+      var syoriTimeS = Performance.now();
     }
 
     if (this.states.isPlaying) this.stop();
@@ -548,7 +548,7 @@ var PicoAudio = (function () {
     this.initStatus();
 
     if (this.debug) {
-      var syoriTimeE = performance.now();
+      var syoriTimeE = Performance.now();
       console.log("setData time", syoriTimeE - syoriTimeS);
     }
 
@@ -770,8 +770,8 @@ var PicoAudio = (function () {
        * 1ms毎処理用の変数を初期化
        */
       value: function init(picoAudio, currentTime) {
-        this.updatePreTime = performance.now();
-        this.pPreTime = performance.now();
+        this.updatePreTime = Performance.now();
+        this.pPreTime = Performance.now();
         this.cPreTime = picoAudio.context.currentTime * 1000;
         this.pTimeSum = 0;
         this.cTimeSum = 0;
@@ -792,7 +792,7 @@ var PicoAudio = (function () {
         var context = picoAudio.context;
         var settings = picoAudio.settings;
         var states = picoAudio.states;
-        var updateNowTime = performance.now();
+        var updateNowTime = Performance.now();
         var updatePreTime = this.updatePreTime;
         var pPreTime = this.pPreTime;
         var cPreTime = this.cPreTime;
@@ -993,7 +993,7 @@ var PicoAudio = (function () {
                       webMIDIMes[i + 1] = smfData[sysExStartP + i];
                     }
 
-                    settings.WebMIDIPortOutput.send(webMIDIMes, (time - context.currentTime + window.performance.now() / 1000 + states.startTime) * 1000);
+                    settings.WebMIDIPortOutput.send(webMIDIMes, (time - context.currentTime + Performance.now() / 1000 + states.startTime) * 1000);
                   }
                 } else {
                   // sysEx以外のMIDIメッセージ
@@ -1003,7 +1003,7 @@ var PicoAudio = (function () {
                     sendMes.push(smfData[p + _i]);
                   }
 
-                  settings.WebMIDIPortOutput.send(sendMes, (time - context.currentTime + window.performance.now() / 1000 + states.startTime) * 1000);
+                  settings.WebMIDIPortOutput.send(sendMes, (time - context.currentTime + Performance.now() / 1000 + states.startTime) * 1000);
                 }
               } catch (e) {
                 console.log(e, p, pLen, time, state);
@@ -1142,7 +1142,7 @@ var PicoAudio = (function () {
     var reserveSongEndFunc = function reserveSongEndFunc() {
       _this.clearFunc("rootTimeout", reserveSongEnd);
 
-      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number$1.MAX_SAFE_INTEGER);
+      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number$1.MAX_SAFE_INTEGER());
 
       if (finishTime - context.currentTime + states.startTime <= 0) {
         // 予定の時間以降に曲終了
@@ -1164,7 +1164,7 @@ var PicoAudio = (function () {
       }
     };
 
-    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER);
+    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER());
     var reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -3217,9 +3217,9 @@ var PicoAudio = (function () {
     var tempoCurTime;
     var cc111Tick = -1;
     var cc111Time = -1;
-    var firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER; // 最初のノートオンのTick
+    var firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER(); // 最初のノートオンのTick
 
-    var firstNoteOnTime = Number$1.MAX_SAFE_INTEGER;
+    var firstNoteOnTime = Number$1.MAX_SAFE_INTEGER();
     var lastNoteOffTiming = 0; // 最後のノートオフのTick
 
     var lastNoteOffTime = 0; // Midi Events (0x8n - 0xEn) parse
@@ -3703,7 +3703,7 @@ var PicoAudio = (function () {
   function parseSMF(_smf) {
     if (this.debug) {
       console.log(_smf);
-      var syoriTimeS1 = performance.now();
+      var syoriTimeS1 = Performance.now();
     } // smf配列はデータ上書きするので_smfをディープコピーする
 
 
@@ -3718,14 +3718,14 @@ var PicoAudio = (function () {
     parseHeader.call(this, info);
 
     if (this.debug) {
-      var syoriTimeS2 = performance.now();
+      var syoriTimeS2 = Performance.now();
     } // トラック解析 //
 
 
     parseTrack.call(this, info);
 
     if (this.debug) {
-      var syoriTimeS3 = performance.now();
+      var syoriTimeS3 = Performance.now();
     } // MIDIイベント解析 //
 
 
@@ -3750,7 +3750,7 @@ var PicoAudio = (function () {
     }
 
     if (this.debug) {
-      var syoriTimeE = performance.now();
+      var syoriTimeE = Performance.now();
       console.log("parseSMF time", syoriTimeE - syoriTimeS1);
       console.log("parseSMF(0/2) time", syoriTimeS2 - syoriTimeS1);
       console.log("parseSMF(1/2) time", syoriTimeS3 - syoriTimeS2);
@@ -4027,6 +4027,29 @@ var PicoAudio = (function () {
         });
       }
     }, {
+      key: "setOnSongEndListener",
+      value: function setOnSongEndListener(listener) {
+        this.onSongEndListener = listener;
+      }
+    }, {
+      key: "onSongEnd",
+      value: function onSongEnd() {
+        if (this.onSongEndListener) {
+          var isStopFunc = this.onSongEndListener();
+          if (isStopFunc) return;
+        }
+
+        if (this.settings.loop) {
+          this.initStatus(true);
+
+          if (this.settings.isCC111 && this.cc111Time != -1) {
+            this.setStartTime(this.cc111Time);
+          }
+
+          this.play(true);
+        }
+      }
+    }, {
       key: "gethannels",
       value: function gethannels() {
         return this.channels;
@@ -4092,27 +4115,44 @@ var PicoAudio = (function () {
         this.settings.isCC111 = enable;
       }
     }, {
-      key: "setOnSongEndListener",
-      value: function setOnSongEndListener(listener) {
-        this.onSongEndListener = listener;
+      key: "isReverb",
+      value: function isReverb() {
+        return this.settings.isReverb;
       }
     }, {
-      key: "onSongEnd",
-      value: function onSongEnd() {
-        if (this.onSongEndListener) {
-          var isStopFunc = this.onSongEndListener();
-          if (isStopFunc) return;
-        }
-
-        if (this.settings.loop) {
-          this.initStatus(true);
-
-          if (this.settings.isCC111 && this.cc111Time != -1) {
-            this.setStartTime(this.cc111Time);
-          }
-
-          this.play(true);
-        }
+      key: "setReverb",
+      value: function setReverb(enable) {
+        this.settings.isReverb = enable;
+      }
+    }, {
+      key: "getReverbVolume",
+      value: function getReverbVolume() {
+        return this.settings.reverbVolume;
+      }
+    }, {
+      key: "setReverbVolume",
+      value: function setReverbVolume(volume) {
+        this.settings.reverbVolume = volume;
+      }
+    }, {
+      key: "isChorus",
+      value: function isChorus() {
+        return this.settings.isChorus;
+      }
+    }, {
+      key: "setChorus",
+      value: function setChorus(enable) {
+        this.settings.isChorus = enable;
+      }
+    }, {
+      key: "getChorusVolume",
+      value: function getChorusVolume() {
+        return this.settings.chorusVolume;
+      }
+    }, {
+      key: "setChorusVolume",
+      value: function setChorusVolume(volume) {
+        this.settings.chorusVolume = volume;
       }
     }]);
 
@@ -4122,3 +4162,4 @@ var PicoAudio = (function () {
   return PicoAudio;
 
 }());
+//# sourceMappingURL=PicoAudio.js.map

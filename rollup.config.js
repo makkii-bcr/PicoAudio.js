@@ -1,5 +1,6 @@
 import babel from '@rollup/plugin-babel';
 import {terser} from 'rollup-plugin-terser';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 
 const babelParam = {
   babelHelpers: 'bundled',
@@ -13,11 +14,13 @@ export default [
       {
         file: 'dist/PicoAudio.js',
         format: 'iife',
-        name: 'PicoAudio'
+        name: 'PicoAudio',
+        sourcemap: true
       }
     ],
     plugins: [
       babel(babelParam),
+      sourcemaps()
     ]
   },
   {
@@ -26,12 +29,14 @@ export default [
       {
         file: 'dist/PicoAudio.min.js',
         format: 'iife',
-        name: 'PicoAudio'
+        name: 'PicoAudio',
+        sourcemap: true
       }
     ],
     plugins: [
       babel(babelParam),
-      terser()
+      terser(),
+      sourcemaps()
     ]
   },
 	{

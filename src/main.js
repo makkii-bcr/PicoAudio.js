@@ -180,6 +180,21 @@ class PicoAudio {
             }
         });
     }
+
+    setOnSongEndListener(listener) { this.onSongEndListener = listener; }
+    onSongEnd() {
+        if (this.onSongEndListener) {
+            const isStopFunc = this.onSongEndListener();
+            if (isStopFunc) return;
+        }
+        if (this.settings.loop) {
+            this.initStatus(true);
+            if (this.settings.isCC111 && this.cc111Time != -1) {
+                this.setStartTime(this.cc111Time);
+            }
+            this.play(true);
+        }
+    }
     gethannels() { return this.channels; }
     setChannels(channels) {
         channels.forEach((channel, idx) => {
@@ -203,21 +218,15 @@ class PicoAudio {
     isWebMIDI() { return this.settings.isWebMIDI; }
     setWebMIDI(enable) { this.settings.isWebMIDI = enable; }
     isCC111() { return this.settings.isCC111; }
-    setCC111(enable) { this.settings.isCC111 = enable; }
-    setOnSongEndListener(listener) { this.onSongEndListener = listener; }
-    onSongEnd() {
-        if (this.onSongEndListener) {
-            const isStopFunc = this.onSongEndListener();
-            if (isStopFunc) return;
-        }
-        if (this.settings.loop) {
-            this.initStatus(true);
-            if (this.settings.isCC111 && this.cc111Time != -1) {
-                this.setStartTime(this.cc111Time);
-            }
-            this.play(true);
-        }
-    }
+    setCC111(enable) { this.settings.isCC111 = enable; } 
+    isReverb() { return this.settings.isReverb; }
+    setReverb(enable) { this.settings.isReverb = enable; }
+    getReverbVolume() { return this.settings.reverbVolume; }
+    setReverbVolume(volume) { this.settings.reverbVolume = volume; }
+    isChorus() { return this.settings.isChorus; }
+    setChorus(enable) { this.settings.isChorus = enable; }
+    getChorusVolume() { return this.settings.chorusVolume; }
+    setChorusVolume(volume) { this.settings.chorusVolume = volume; }
 }
 
 export default PicoAudio;

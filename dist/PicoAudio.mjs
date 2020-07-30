@@ -267,14 +267,14 @@ function init(argsObj) {
     this.chorusOscillator.start(0);
 }
 
-class performance {
-    now() {
+class Performance {
+    static now() {
         // Unsupport performance.now()
         if (this._now == null) {
-            if (typeof performance === "undefined") {
-                this._now = () => { return Date.now(); };
+            if (typeof window.performance === "undefined") {
+                this._now = () => { return window.Date.now(); };
             } else {
-                this._now = () => { return performance.now(); };
+                this._now = () => { return window.performance.now(); };
             }
         }
         return this._now();
@@ -282,12 +282,12 @@ class performance {
 }
 
 class Number$1 {
-    get MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
+    static MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
 }
 
 function setData(data) {
     if (this.debug) {
-        var syoriTimeS = performance.now();
+        var syoriTimeS = Performance.now();
     }
 
     if (this.states.isPlaying) this.stop();
@@ -304,7 +304,7 @@ function setData(data) {
     this.initStatus();
 
     if (this.debug) {
-        const syoriTimeE = performance.now();
+        const syoriTimeE = Performance.now();
         console.log("setData time", syoriTimeE - syoriTimeS);
     }
 
@@ -479,8 +479,8 @@ class UpdateNote {
      * 1ms毎処理用の変数を初期化
      */
     static init(picoAudio, currentTime) {
-        this.updatePreTime = performance.now();
-        this.pPreTime = performance.now();
+        this.updatePreTime = Performance.now();
+        this.pPreTime = Performance.now();
         this.cPreTime = picoAudio.context.currentTime * 1000;
         this.pTimeSum = 0;
         this.cTimeSum = 0;
@@ -497,7 +497,7 @@ class UpdateNote {
         const context = picoAudio.context;
         const settings = picoAudio.settings;
         const states = picoAudio.states;
-        const updateNowTime = performance.now();
+        const updateNowTime = Performance.now();
         const updatePreTime = this.updatePreTime;
         let pPreTime = this.pPreTime;
         let cPreTime = this.cPreTime;
@@ -683,14 +683,14 @@ class UpdateNote {
                                 for (let i=0; i<size; i++)
                                     webMIDIMes[i+1] = smfData[sysExStartP + i];
                                 settings.WebMIDIPortOutput.send(webMIDIMes,
-                                    (time - context.currentTime + window.performance.now()/1000 + states.startTime) * 1000);
+                                    (time - context.currentTime + Performance.now()/1000 + states.startTime) * 1000);
                             }
                         } else {
                             // sysEx以外のMIDIメッセージ
                             const sendMes = [];
                             for (let i=0; i<pLen; i++) sendMes.push(smfData[p+i]);
                             settings.WebMIDIPortOutput.send(sendMes,
-                                (time - context.currentTime + window.performance.now()/1000 + states.startTime) * 1000);
+                                (time - context.currentTime + Performance.now()/1000 + states.startTime) * 1000);
                         }
                     } catch(e) {
                         console.log(e, p, pLen, time, state);
@@ -817,7 +817,7 @@ function play(isSongLooping) {
     let reserveSongEnd;
     const reserveSongEndFunc = () => {
         this.clearFunc("rootTimeout", reserveSongEnd);
-        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER);
+        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER());
         if (finishTime - context.currentTime + states.startTime <= 0) {
             // 予定の時間以降に曲終了
             trigger.songEnd();
@@ -834,7 +834,7 @@ function play(isSongLooping) {
     };
     const finishTime = settings.isCC111 && this.cc111Time != -1
         ? this.lastNoteOffTime
-        : this.getTime(Number$1.MAX_SAFE_INTEGER);
+        : this.getTime(Number$1.MAX_SAFE_INTEGER());
     const reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -2630,8 +2630,8 @@ function parseEvent(info) {
     let tempoCurTime;
     let cc111Tick = -1;
     let cc111Time = -1;
-    let firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER; // 最初のノートオンのTick
-    let firstNoteOnTime = Number$1.MAX_SAFE_INTEGER;
+    let firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER(); // 最初のノートオンのTick
+    let firstNoteOnTime = Number$1.MAX_SAFE_INTEGER();
     let lastNoteOffTiming = 0; // 最後のノートオフのTick
     let lastNoteOffTime = 0;
 
@@ -3002,7 +3002,7 @@ function parseEvent(info) {
 function parseSMF(_smf) {
     if (this.debug) {
         console.log(_smf);
-        var syoriTimeS1 = performance.now();
+        var syoriTimeS1 = Performance.now();
     }
 
     // smf配列はデータ上書きするので_smfをディープコピーする
@@ -3020,13 +3020,13 @@ function parseSMF(_smf) {
     // ヘッダー解析 //
     parseHeader.call(this, info);
     if (this.debug) {
-        var syoriTimeS2 = performance.now();
+        var syoriTimeS2 = Performance.now();
     }
 
     // トラック解析 //
     parseTrack.call(this, info);
     if (this.debug) {
-        var syoriTimeS3 = performance.now();
+        var syoriTimeS3 = Performance.now();
     }
 
     // MIDIイベント解析 //
@@ -3051,7 +3051,7 @@ function parseSMF(_smf) {
     }
 
     if (this.debug) {
-        const syoriTimeE = performance.now();
+        const syoriTimeE = Performance.now();
         console.log("parseSMF time", syoriTimeE - syoriTimeS1);
         console.log("parseSMF(0/2) time", syoriTimeS2 - syoriTimeS1);
         console.log("parseSMF(1/2) time", syoriTimeS3 - syoriTimeS2);
@@ -3267,6 +3267,21 @@ class PicoAudio {
             }
         });
     }
+
+    setOnSongEndListener(listener) { this.onSongEndListener = listener; }
+    onSongEnd() {
+        if (this.onSongEndListener) {
+            const isStopFunc = this.onSongEndListener();
+            if (isStopFunc) return;
+        }
+        if (this.settings.loop) {
+            this.initStatus(true);
+            if (this.settings.isCC111 && this.cc111Time != -1) {
+                this.setStartTime(this.cc111Time);
+            }
+            this.play(true);
+        }
+    }
     gethannels() { return this.channels; }
     setChannels(channels) {
         channels.forEach((channel, idx) => {
@@ -3290,21 +3305,15 @@ class PicoAudio {
     isWebMIDI() { return this.settings.isWebMIDI; }
     setWebMIDI(enable) { this.settings.isWebMIDI = enable; }
     isCC111() { return this.settings.isCC111; }
-    setCC111(enable) { this.settings.isCC111 = enable; }
-    setOnSongEndListener(listener) { this.onSongEndListener = listener; }
-    onSongEnd() {
-        if (this.onSongEndListener) {
-            const isStopFunc = this.onSongEndListener();
-            if (isStopFunc) return;
-        }
-        if (this.settings.loop) {
-            this.initStatus(true);
-            if (this.settings.isCC111 && this.cc111Time != -1) {
-                this.setStartTime(this.cc111Time);
-            }
-            this.play(true);
-        }
-    }
+    setCC111(enable) { this.settings.isCC111 = enable; } 
+    isReverb() { return this.settings.isReverb; }
+    setReverb(enable) { this.settings.isReverb = enable; }
+    getReverbVolume() { return this.settings.reverbVolume; }
+    setReverbVolume(volume) { this.settings.reverbVolume = volume; }
+    isChorus() { return this.settings.isChorus; }
+    setChorus(enable) { this.settings.isChorus = enable; }
+    getChorusVolume() { return this.settings.chorusVolume; }
+    setChorusVolume(volume) { this.settings.chorusVolume = volume; }
 }
 
 export default PicoAudio;

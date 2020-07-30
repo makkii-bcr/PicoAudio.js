@@ -1,12 +1,12 @@
 
-export class performance {
-    now() {
+export class Performance {
+    static now() {
         // Unsupport performance.now()
         if (this._now == null) {
-            if (typeof performance === "undefined") {
-                this._now = () => { return Date.now(); };
+            if (typeof window.performance === "undefined") {
+                this._now = () => { return window.Date.now(); };
             } else {
-                this._now = () => { return performance.now(); };
+                this._now = () => { return window.performance.now(); };
             }
         }
         return this._now();
@@ -14,5 +14,5 @@ export class performance {
 }
 
 export class Number {
-    get MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
+    static MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
 }
