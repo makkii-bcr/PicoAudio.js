@@ -1,3 +1,4 @@
-\sample
-\src
+/sample
+/src
+/dist/*.map
 rollup.config.js

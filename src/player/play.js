@@ -1,5 +1,5 @@
 import UpdateNote from './play/update-note.js';
-import {Number} from '../util/ponyfill.js';
+import {Number_MAX_SAFE_INTEGER} from '../util/ponyfill.js';
 
 export default function play(isSongLooping) {
     const context = this.context;
@@ -50,7 +50,7 @@ export default function play(isSongLooping) {
     let reserveSongEnd;
     const reserveSongEndFunc = () => {
         this.clearFunc("rootTimeout", reserveSongEnd);
-        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number.MAX_SAFE_INTEGER());
+        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number_MAX_SAFE_INTEGER);
         if (finishTime - context.currentTime + states.startTime <= 0) {
             // 予定の時間以降に曲終了
             trigger.songEnd();
@@ -67,7 +67,7 @@ export default function play(isSongLooping) {
     };
     const finishTime = settings.isCC111 && this.cc111Time != -1
         ? this.lastNoteOffTime
-        : this.getTime(Number.MAX_SAFE_INTEGER());
+        : this.getTime(Number_MAX_SAFE_INTEGER);
     const reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({

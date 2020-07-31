@@ -281,9 +281,7 @@ class Performance {
     }
 }
 
-class Number$1 {
-    static MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
-}
+const Number_MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
 
 function setData(data) {
     if (this.debug) {
@@ -817,7 +815,7 @@ function play(isSongLooping) {
     let reserveSongEnd;
     const reserveSongEndFunc = () => {
         this.clearFunc("rootTimeout", reserveSongEnd);
-        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER());
+        const finishTime = (settings.isCC111 && this.cc111Time != -1) ? this.lastNoteOffTime : this.getTime(Number_MAX_SAFE_INTEGER);
         if (finishTime - context.currentTime + states.startTime <= 0) {
             // 予定の時間以降に曲終了
             trigger.songEnd();
@@ -834,7 +832,7 @@ function play(isSongLooping) {
     };
     const finishTime = settings.isCC111 && this.cc111Time != -1
         ? this.lastNoteOffTime
-        : this.getTime(Number$1.MAX_SAFE_INTEGER());
+        : this.getTime(Number_MAX_SAFE_INTEGER);
     const reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -2630,8 +2628,8 @@ function parseEvent(info) {
     let tempoCurTime;
     let cc111Tick = -1;
     let cc111Time = -1;
-    let firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER(); // 最初のノートオンのTick
-    let firstNoteOnTime = Number$1.MAX_SAFE_INTEGER();
+    let firstNoteOnTiming = Number_MAX_SAFE_INTEGER; // 最初のノートオンのTick
+    let firstNoteOnTime = Number_MAX_SAFE_INTEGER;
     let lastNoteOffTiming = 0; // 最後のノートオフのTick
     let lastNoteOffTime = 0;
 
@@ -3317,3 +3315,4 @@ class PicoAudio {
 }
 
 export default PicoAudio;
+//# sourceMappingURL=PicoAudio.mjs.map

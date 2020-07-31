@@ -515,20 +515,7 @@ var PicoAudio = (function () {
 
     return Performance;
   }();
-  var Number$1 = /*#__PURE__*/function () {
-    function Number() {
-      _classCallCheck(this, Number);
-    }
-
-    _createClass(Number, null, [{
-      key: "MAX_SAFE_INTEGER",
-      value: function MAX_SAFE_INTEGER() {
-        return 0x1FFFFFFFFFFFFF;
-      }
-    }]);
-
-    return Number;
-  }();
+  var Number_MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
 
   function setData(data) {
     if (this.debug) {
@@ -1142,7 +1129,7 @@ var PicoAudio = (function () {
     var reserveSongEndFunc = function reserveSongEndFunc() {
       _this.clearFunc("rootTimeout", reserveSongEnd);
 
-      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number$1.MAX_SAFE_INTEGER());
+      var finishTime = settings.isCC111 && _this.cc111Time != -1 ? _this.lastNoteOffTime : _this.getTime(Number_MAX_SAFE_INTEGER);
 
       if (finishTime - context.currentTime + states.startTime <= 0) {
         // 予定の時間以降に曲終了
@@ -1164,7 +1151,7 @@ var PicoAudio = (function () {
       }
     };
 
-    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number$1.MAX_SAFE_INTEGER());
+    var finishTime = settings.isCC111 && this.cc111Time != -1 ? this.lastNoteOffTime : this.getTime(Number_MAX_SAFE_INTEGER);
     var reserveSongEndTime = (finishTime - context.currentTime + states.startTime) * 1000;
     reserveSongEnd = setTimeout(reserveSongEndFunc, reserveSongEndTime);
     this.pushFunc({
@@ -3217,9 +3204,9 @@ var PicoAudio = (function () {
     var tempoCurTime;
     var cc111Tick = -1;
     var cc111Time = -1;
-    var firstNoteOnTiming = Number$1.MAX_SAFE_INTEGER(); // 最初のノートオンのTick
+    var firstNoteOnTiming = Number_MAX_SAFE_INTEGER; // 最初のノートオンのTick
 
-    var firstNoteOnTime = Number$1.MAX_SAFE_INTEGER();
+    var firstNoteOnTime = Number_MAX_SAFE_INTEGER;
     var lastNoteOffTiming = 0; // 最後のノートオフのTick
 
     var lastNoteOffTime = 0; // Midi Events (0x8n - 0xEn) parse

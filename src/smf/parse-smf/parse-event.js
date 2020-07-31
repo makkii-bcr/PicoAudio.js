@@ -1,5 +1,5 @@
 import ArrayUtil from '../../util/array-util.js';
-import {Number} from '../../util/ponyfill.js';
+import {Number_MAX_SAFE_INTEGER} from '../../util/ponyfill.js';
 
 export default function parseEvent(info) {
     // 関数呼び出し元からデータをもらう //
@@ -15,8 +15,8 @@ export default function parseEvent(info) {
     let tempoCurTime;
     let cc111Tick = -1;
     let cc111Time = -1;
-    let firstNoteOnTiming = Number.MAX_SAFE_INTEGER(); // 最初のノートオンのTick
-    let firstNoteOnTime = Number.MAX_SAFE_INTEGER();
+    let firstNoteOnTiming = Number_MAX_SAFE_INTEGER; // 最初のノートオンのTick
+    let firstNoteOnTime = Number_MAX_SAFE_INTEGER;
     let lastNoteOffTiming = 0; // 最後のノートオフのTick
     let lastNoteOffTime = 0;
 

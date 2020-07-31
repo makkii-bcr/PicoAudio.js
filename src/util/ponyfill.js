@@ -1,4 +1,3 @@
-
 export class Performance {
     static now() {
         // Unsupport performance.now()
@@ -13,6 +12,4 @@ export class Performance {
     }
 }
 
-export class Number {
-    static MAX_SAFE_INTEGER() { return 0x1FFFFFFFFFFFFF; }
-}
+export const Number_MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
