@@ -115,13 +115,10 @@ export default class UpdateNote {
                 const note = notes[idx];
                 const curTime = cnt == 0 ? this.initCurrentTime - states.startTime
                     : context.currentTime - states.startTime;
-
                 // 終わったノートは演奏せずにスキップ
                 if (curTime >= note.stopTime) continue;
                 // （シークバーで途中から再生時）startTimeが過ぎたものは鳴らさない
-                if (cnt == 0 && curTime > note.startTime+0.05) continue;
-                // AudioParam.setValueAtTime()等でマイナスが入るとエラーになるので対策
-                if (curTime + note.startTime < 0) continue;
+                if (cnt == 0 && curTime > note.startTime) continue;
                 // 演奏開始時間 - 先読み時間(ノート予約) になると演奏予約or演奏開始
                 if (curTime < note.startTime - states.updateBufTime/1000) break;
 

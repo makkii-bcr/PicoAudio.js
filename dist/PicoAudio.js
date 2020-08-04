@@ -880,9 +880,7 @@ var PicoAudio = (function () {
 
             if (curTime >= note.stopTime) return "continue"; // （シークバーで途中から再生時）startTimeが過ぎたものは鳴らさない
 
-            if (cnt == 0 && curTime > note.startTime + 0.05) return "continue"; // AudioParam.setValueAtTime()等でマイナスが入るとエラーになるので対策
-
-            if (curTime + note.startTime < 0) return "continue"; // 演奏開始時間 - 先読み時間(ノート予約) になると演奏予約or演奏開始
+            if (cnt == 0 && curTime > note.startTime) return "continue"; // 演奏開始時間 - 先読み時間(ノート予約) になると演奏予約or演奏開始
 
             if (curTime < note.startTime - states.updateBufTime / 1000) return "break"; // PicoAudio音源の再生処理 //
 
@@ -1080,7 +1078,9 @@ var PicoAudio = (function () {
     var context = this.context;
     var settings = this.settings;
     var trigger = this.trigger;
-    var states = this.states; // 再生中の場合、処理しない //
+    var states = this.states; // Chrome Audio Policy 対策 //
+
+    context.resume(); // 再生中の場合、処理しない //
 
     if (states.isPlaying) return; // WebMIDIの場合、少し待ってから再生する //
 
@@ -1236,7 +1236,9 @@ var PicoAudio = (function () {
       option.expression ? option.expression.forEach(function (p) {
         var v = velocity * (p.value / 127);
         if (v > 0) isGainValueZero = false;
-        expGainNode.gain.setValueAtTime(v, p.time + songStartTime);
+        var t = p.time + songStartTime;
+        if (t < 0) t = 0;
+        expGainNode.gain.setValueAtTime(v, t);
       }) : false;
     } else {
       if (expGainValue > 0) {
@@ -1271,7 +1273,9 @@ var PicoAudio = (function () {
       oscillator.detune.value = 0;
       oscillator.frequency.value = pitch;
       option.pitchBend ? option.pitchBend.forEach(function (p) {
-        oscillator.frequency.setValueAtTime(settings.basePitch * Math.pow(Math.pow(2, 1 / 12), option.pitch - 69 + p.value), p.time + songStartTime);
+        var t = p.time + songStartTime;
+        if (t < 0) t = 0;
+        oscillator.frequency.setValueAtTime(settings.basePitch * Math.pow(Math.pow(2, 1 / 12), option.pitch - 69 + p.value), t);
       }) : false;
     } else {
       oscillator.loop = true;
@@ -1296,7 +1300,9 @@ var PicoAudio = (function () {
 
           var v = p.value == 64 ? 0 : p.value / 127 * 2 - 1;
           if (v > 1.0) v = 1.0;
-          panNode.pan.setValueAtTime(v, p.time + songStartTime);
+          var t = p.time + songStartTime;
+          if (t < 0) t = 0;
+          panNode.pan.setValueAtTime(v, t);
         }) : false;
       } else if (context.createPanner) {
         // StereoPannerNode が未サポート、PannerNode が使える
@@ -1312,9 +1318,11 @@ var PicoAudio = (function () {
 
             var v = p.value == 64 ? 0 : p.value / 127 * 2 - 1;
             var posObj = convPosition(v);
-            panNode.positionX.setValueAtTime(posObj.x, p.time + songStartTime);
-            panNode.positionY.setValueAtTime(posObj.y, p.time + songStartTime);
-            panNode.positionZ.setValueAtTime(posObj.z, p.time + songStartTime);
+            var t = p.time + songStartTime;
+            if (t < 0) t = 0;
+            panNode.positionX.setValueAtTime(posObj.x, t);
+            panNode.positionY.setValueAtTime(posObj.y, t);
+            panNode.positionZ.setValueAtTime(posObj.z, t);
           }) : false;
         } else {
           // iOS
@@ -1372,7 +1380,9 @@ var PicoAudio = (function () {
 
         var m = p.value / 127;
         if (m > 1.0) m = 1.0;
-        modulationGainNode.gain.setValueAtTime(pitch * 10 / 440 * m, p.time + songStartTime);
+        var t = p.time + songStartTime;
+        if (t < 0) t = 0;
+        modulationGainNode.gain.setValueAtTime(pitch * 10 / 440 * m, t);
       }) : false;
       var m = option.modulation ? option.modulation[0].value / 127 : 0;
       if (m > 1.0) m = 1.0;
@@ -1395,7 +1405,9 @@ var PicoAudio = (function () {
 
         var r = p.value / 127;
         if (r > 1.0) r = 1.0;
-        convolverGainNode.gain.setValueAtTime(r, p.time + songStartTime);
+        var t = p.time + songStartTime;
+        if (t < 0) t = 0;
+        convolverGainNode.gain.setValueAtTime(r, t);
       }) : false;
       var r = option.reverb ? option.reverb[0].value / 127 : 0;
       if (r > 1.0) r = 1.0;
@@ -1418,7 +1430,9 @@ var PicoAudio = (function () {
 
         var c = p.value / 127;
         if (c > 1.0) c = 1.0;
-        chorusGainNode.gain.setValueAtTime(c, p.time + songStartTime);
+        var t = p.time + songStartTime;
+        if (t < 0) t = 0;
+        chorusGainNode.gain.setValueAtTime(c, t);
       }) : false;
       var c = option.chorus ? option.chorus[0].value / 127 : 0;
       if (c > 1.0) c = 1.0;
@@ -4149,4 +4163,3 @@ var PicoAudio = (function () {
   return PicoAudio;
 
 }());
-//# sourceMappingURL=PicoAudio.js.map

@@ -585,13 +585,10 @@ class UpdateNote {
                 const note = notes[idx];
                 const curTime = cnt == 0 ? this.initCurrentTime - states.startTime
                     : context.currentTime - states.startTime;
-
                 // 終わったノートは演奏せずにスキップ
                 if (curTime >= note.stopTime) continue;
                 // （シークバーで途中から再生時）startTimeが過ぎたものは鳴らさない
-                if (cnt == 0 && curTime > note.startTime+0.05) continue;
-                // AudioParam.setValueAtTime()等でマイナスが入るとエラーになるので対策
-                if (curTime + note.startTime < 0) continue;
+                if (cnt == 0 && curTime > note.startTime) continue;
                 // 演奏開始時間 - 先読み時間(ノート予約) になると演奏予約or演奏開始
                 if (curTime < note.startTime - states.updateBufTime/1000) break;
 
@@ -772,6 +769,9 @@ function play(isSongLooping) {
     const trigger = this.trigger;
     const states = this.states;
 
+    // Chrome Audio Policy 対策 //
+    context.resume();
+
     // 再生中の場合、処理しない //
     if (states.isPlaying) return;
 
@@ -915,10 +915,9 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
         option.expression ? option.expression.forEach((p) => {
             const v = velocity * (p.value / 127);
             if (v > 0) isGainValueZero = false;
-            expGainNode.gain.setValueAtTime(
-                v,
-                p.time + songStartTime
-            );
+            let t = p.time + songStartTime;
+            if (t < 0) t = 0;
+            expGainNode.gain.setValueAtTime(v, t);
         }) : false;
     } else {
         if (expGainValue > 0) {
@@ -949,9 +948,11 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
         oscillator.detune.value = 0;
         oscillator.frequency.value = pitch;
         option.pitchBend ? option.pitchBend.forEach((p) => {
+            let t = p.time + songStartTime;
+            if (t < 0) t = 0;
             oscillator.frequency.setValueAtTime(
                 settings.basePitch * Math.pow(Math.pow(2, 1/12), option.pitch - 69 + p.value),
-                p.time + songStartTime
+                t
             );
         }) : false;
     } else {
@@ -976,10 +977,9 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
                 }
                 let v = p.value == 64 ? 0 : (p.value / 127) * 2 - 1;
                 if (v > 1.0) v = 1.0;
-                panNode.pan.setValueAtTime(
-                    v,
-                    p.time + songStartTime
-                );
+                let t = p.time + songStartTime;
+                if (t < 0) t = 0;
+                panNode.pan.setValueAtTime(v, t);
             }) : false;
         } else if (context.createPanner) {
             // StereoPannerNode が未サポート、PannerNode が使える
@@ -994,9 +994,11 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
                     }
                     const v = p.value == 64 ? 0 : (p.value / 127) * 2 - 1;
                     const posObj = convPosition(v);
-                    panNode.positionX.setValueAtTime(posObj.x, p.time + songStartTime);
-                    panNode.positionY.setValueAtTime(posObj.y, p.time + songStartTime);
-                    panNode.positionZ.setValueAtTime(posObj.z, p.time + songStartTime);
+                    let t = p.time + songStartTime;
+                    if (t < 0) t = 0;
+                    panNode.positionX.setValueAtTime(posObj.x, t);
+                    panNode.positionY.setValueAtTime(posObj.y, t);
+                    panNode.positionZ.setValueAtTime(posObj.z, t);
                 }) : false;
             } else {
                 // iOS
@@ -1047,9 +1049,11 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
             }
             let m = p.value / 127;
             if (m > 1.0) m = 1.0;
+            let t = p.time + songStartTime;
+            if (t < 0) t = 0;
             modulationGainNode.gain.setValueAtTime(
                 pitch * 10 / 440 * m,
-                p.time + songStartTime
+                t
             );
         }) : false;
         let m = option.modulation ? option.modulation[0].value / 127 : 0;
@@ -1072,10 +1076,9 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
             }
             let r = p.value / 127;
             if (r > 1.0) r = 1.0;
-            convolverGainNode.gain.setValueAtTime(
-                r,
-                p.time + songStartTime
-            );
+            let t = p.time + songStartTime;
+            if (t < 0) t = 0;
+            convolverGainNode.gain.setValueAtTime(r, t);
         }) : false;
         let r = option.reverb ? option.reverb[0].value / 127 : 0;
         if (r > 1.0) r = 1.0;
@@ -1097,10 +1100,9 @@ function createBaseNote(option, isDrum, isExpression, nonChannel, nonStop) {
             }
             let c = p.value / 127;
             if (c > 1.0) c = 1.0;
-            chorusGainNode.gain.setValueAtTime(
-                c,
-                p.time + songStartTime
-            );
+            let t = p.time + songStartTime;
+            if (t < 0) t = 0;
+            chorusGainNode.gain.setValueAtTime(c, t);
         }) : false;
         let c = option.chorus ? option.chorus[0].value / 127 : 0;
         if (c > 1.0) c = 1.0;
@@ -3315,4 +3317,3 @@ class PicoAudio {
 }
 
 export default PicoAudio;
-//# sourceMappingURL=PicoAudio.mjs.map
