@@ -11,7 +11,7 @@ export default [
     input: 'src/main.js',
     output: [
       {
-        file: 'dist/PicoAudio.js',
+        file: 'dist/pico-audio.js',
         format: 'iife',
         name: 'PicoAudio'
       }
@@ -24,7 +24,7 @@ export default [
     input: 'src/main.js',
     output: [
       {
-        file: 'dist/PicoAudio.min.js',
+        file: 'dist/pico-audio.min.js',
         format: 'iife',
         name: 'PicoAudio'
       }
@@ -38,7 +38,7 @@ export default [
     input: 'src/main.js',
     output: [
       {
-        file: 'dist/PicoAudio.mjs',
+        file: 'dist/pico-audio.mjs',
         format: 'esm'
       }
     ]
