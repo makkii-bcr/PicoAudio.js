@@ -2,8 +2,8 @@
   "name": "pico-audio-js",
   "version": "1.0.0",
   "description": "playing MIDI on web",
-  "main": "dist/PicoAudio.js",
-  "module": "dist/PicoAudio.mjs",
+  "main": "./dist/PicoAudio.js",
+  "module": "./dist/PicoAudio.mjs",
   "scripts": {
     "build": "rollup -c",
     "build:map": "rollup -c --sourcemap",
