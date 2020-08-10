@@ -42,12 +42,7 @@ export default [
         format: 'cjs',
         name: 'PicoAudio',
         exports: 'default'
-      }
-    ]
-  },
-  {
-    input: 'src/main.js',
-    output: [
+      },
       {
         file: 'dist/pico-audio.mjs',
         format: 'esm'

@@ -4,14 +4,9 @@
   "description": "playing MIDI on web",
   "main": "./dist/pico-audio.js",
   "module": "./dist/pico-audio.mjs",
-  "exports": {
-    "require": "./dist/pico-audio.js",
-    "import": "./dist/pico-audio.mjs"
-  },
   "scripts": {
-    "build": "rollup -c",
-    "build:map": "rollup -c --sourcemap",
-    "build:map:watch": "rollup -c --sourcemap --watch",
+    "build": "rollup -c --sourcemap",
+    "watch": "rollup -c --sourcemap --watch",
     "lint": "eslint src"
   },
   "repository": {
