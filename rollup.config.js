@@ -17,7 +17,7 @@ export default [
       }
     ],
     plugins: [
-      babel(babelParam)
+      // babel(babelParam)
     ]
   },
   {
