@@ -4,6 +4,10 @@
   "description": "playing MIDI on web",
   "main": "./dist/pico-audio.js",
   "module": "./dist/pico-audio.mjs",
+  "exports": {
+    "require": "./dist/pico-audio.js",
+    "import": "./dist/pico-audio.mjs"
+  },
   "scripts": {
     "build": "rollup -c",
     "build:map": "rollup -c --sourcemap",

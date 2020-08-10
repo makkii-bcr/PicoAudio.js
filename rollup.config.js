@@ -11,20 +11,20 @@ export default [
     input: 'src/main.js',
     output: [
       {
-        file: 'dist/pico-audio.js',
-        format: 'esm',
+        file: 'browser/PicoAudio.js',
+        format: 'iife',
         name: 'PicoAudio'
       }
     ],
     plugins: [
-      // babel(babelParam)
+      babel(babelParam)
     ]
   },
   {
     input: 'src/main.js',
     output: [
       {
-        file: 'dist/pico-audio.min.js',
+        file: 'browser/PicoAudio.min.js',
         format: 'iife',
         name: 'PicoAudio'
       }
@@ -32,6 +32,17 @@ export default [
     plugins: [
       babel(babelParam),
       terser()
+    ]
+  },
+  {
+    input: 'src/main.js',
+    output: [
+      {
+        file: 'dist/pico-audio.js',
+        format: 'cjs',
+        name: 'PicoAudio',
+        exports: 'default'
+      }
     ]
   },
   {

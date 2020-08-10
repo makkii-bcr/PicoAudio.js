@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 argsObj {
     debug,
@@ -3316,4 +3318,4 @@ class PicoAudio {
     setChorusVolume(volume) { this.settings.chorusVolume = volume; }
 }
 
-export default PicoAudio;
+module.exports = PicoAudio;
