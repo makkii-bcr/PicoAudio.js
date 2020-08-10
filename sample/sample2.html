@@ -16,7 +16,7 @@
                 var file = files[0];
                 var fileReader = new FileReader();
                 fileReader.onload = function(e) {
-                    smfData = new Uint8Array(fileReader.result);
+                    var smfData = new Uint8Array(fileReader.result);
                     if (typeof pAudio === "undefined") {
                         // pAudio = new PicoAudio(); // release
                         pAudio = new PicoAudio({debug: true}); // debug
@@ -24,7 +24,7 @@
                     } else {
                         pAudio.initStatus();
                     }
-                    parseData = pAudio.parseSMF(smfData);
+                    var parseData = pAudio.parseSMF(smfData);
                     pAudio.setData(parseData);
                 }
                 fileReader.readAsArrayBuffer(file);
