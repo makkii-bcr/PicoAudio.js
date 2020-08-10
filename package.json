@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/cagpie/PicoAudio.js.git"
+    "url": "https://github.com/makkii-bcr/PicoAudio.js.git"
   },
   "keywords": [
     "midi",
@@ -23,7 +23,7 @@
     "web midi api",
     "web-midi-api"
   ],
-  "author": "cagpie",
+  "author": "makkii-bcr",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.11.0",
