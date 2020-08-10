@@ -1,5 +1,3 @@
-'use strict';
-
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
@@ -4159,4 +4157,4 @@ var PicoAudio = /*#__PURE__*/function () {
   return PicoAudio;
 }();
 
-module.exports = PicoAudio;
+export default PicoAudio;

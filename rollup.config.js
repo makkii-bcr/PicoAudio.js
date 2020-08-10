@@ -12,7 +12,7 @@ export default [
     output: [
       {
         file: 'dist/pico-audio.js',
-        format: 'cjs',
+        format: 'esm',
         name: 'PicoAudio'
       }
     ],
