@@ -22,7 +22,7 @@ function url() {
 
 export default function () {
   let config = [
-    { // browser PicoAudio.js
+    {
       input: 'src/main.js',
       output: {
         file: 'dist/browser/PicoAudio.js',
@@ -37,7 +37,7 @@ export default function () {
         isWatch && url()
       ]
     },
-    { // browser PicoAudio.min.js
+    {
       input: 'src/main.js',
       output: {
         file: 'dist/browser/PicoAudio.min.js',
@@ -49,7 +49,7 @@ export default function () {
         terser()
       ]
     },
-    { // nodejs pico-audio.js pico-audio.mjs
+    {
       input: 'src/main.js',
       output: [
         {
