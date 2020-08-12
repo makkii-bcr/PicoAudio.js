@@ -5,7 +5,8 @@
   "main": "./dist/pico-audio.js",
   "module": "./dist/pico-audio.mjs",
   "scripts": {
-    "build": "rollup -c --sourcemap",
+    "build": "rollup -c",
+    "build:map": "rollup -c --sourcemap",
     "watch": "rollup -c --sourcemap --watch",
     "lint": "eslint src"
   },
