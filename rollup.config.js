@@ -10,7 +10,7 @@ const babelParam = {
 
 const isWatch = process.env.WATCH;
 
-function localserver() {
+function log() {
   return {
     name: 'localserver',
     generateBundle () {
@@ -34,8 +34,8 @@ export default [
       babel(babelParam),
       // LiveReroad
       isWatch && serve(''),
-      isWatch && livereload({watch: 'dist/browser/PicoAudio.min.js'}),
-      isWatch && localserver()
+      isWatch && livereload({watch: 'dist/browser/PicoAudio.js'}),
+      isWatch && log()
     ]
   },
   {
