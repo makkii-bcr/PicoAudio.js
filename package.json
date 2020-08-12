@@ -2,7 +2,7 @@
   "name": "pico-audio-js",
   "version": "1.0.0",
   "description": "playing MIDI on web",
-  "main": "./dist/nodejs/pico-audio.js",
+  "main": "./dist/nodejs/pico-audio.mjs",
   "module": "./dist/nodejs/pico-audio.mjs",
   "scripts": {
     "build": "rollup -c",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/makkii-bcr/pico-audio-js.git"
+    "url": "https://github.com/cagpie/PicoAudio.js.git"
   },
   "keywords": [
     "midi",
@@ -23,7 +23,7 @@
     "web midi api",
     "web-midi-api"
   ],
-  "author": "makkii-bcr",
+  "author": "cagpie",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.11.1",
