@@ -10,7 +10,7 @@ const babelParam = {
 
 const isWatch = process.env.WATCH;
 
-function log() {
+function url() {
   return {
     name: 'localserver',
     generateBundle () {
@@ -20,51 +20,54 @@ function log() {
   }
 }
 
-export default [
-  {
-    input: 'src/main.js',
-    output: [
-      {
+export default function () {
+  let config = [
+    { // browser PicoAudio.js
+      input: 'src/main.js',
+      output: {
         file: 'dist/browser/PicoAudio.js',
         format: 'iife',
         name: 'PicoAudio'
-      }
-    ],
-    plugins: [
-      babel(babelParam),
-      // LiveReroad
-      isWatch && serve(''),
-      isWatch && livereload({watch: 'dist/browser/PicoAudio.js'}),
-      isWatch && log()
-    ]
-  },
-  {
-    input: 'src/main.js',
-    output: [
-      {
+      },
+      plugins: [
+        babel(babelParam),
+        // LiveReroad
+        isWatch && serve(''),
+        isWatch && livereload({watch: 'dist/browser/PicoAudio.js'}),
+        isWatch && url()
+      ]
+    },
+    { // browser PicoAudio.min.js
+      input: 'src/main.js',
+      output: {
         file: 'dist/browser/PicoAudio.min.js',
         format: 'iife',
         name: 'PicoAudio'
-      }
-    ],
-    plugins: [
-      babel(babelParam),
-      terser()
-    ]
-  },
-  {
-    input: 'src/main.js',
-    output: [
-      {
-        file: 'dist/nodejs/pico-audio.js',
-        format: 'cjs',
-        name: 'PicoAudio',
-        exports: 'default'
       },
-      {
-        file: 'dist/nodejs/pico-audio.mjs',
-        format: 'esm'
-      }
-    ]
+      plugins: [
+        babel(babelParam),
+        terser()
+      ]
+    },
+    { // nodejs pico-audio.js pico-audio.mjs
+      input: 'src/main.js',
+      output: [
+        {
+          file: 'dist/nodejs/pico-audio.js',
+          format: 'cjs',
+          name: 'PicoAudio',
+          exports: 'default'
+        },
+        {
+          file: 'dist/nodejs/pico-audio.mjs',
+          format: 'esm'
+        }
+      ]
+    }
+  ];
+  if (isWatch) {
+    config.pop(); // ignore pico-audio.js pico-audio.mjs
+    config.pop(); // ignore PicoAudio.min.js
   }
-];
+  return config;
+}
