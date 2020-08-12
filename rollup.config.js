@@ -1,10 +1,24 @@
 import babel from '@rollup/plugin-babel';
 import {terser} from 'rollup-plugin-terser';
+import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload';
 
 const babelParam = {
   babelHelpers: 'bundled',
   presets: ["@babel/preset-env"]
 };
+
+const isWatch = process.env.WATCH;
+
+function localserver() {
+  return {
+    name: 'localserver',
+    generateBundle () {
+      console.log("http://localhost:10001/sample/sample1.html");
+      console.log("http://localhost:10001/sample/sample2.html");
+    }
+  }
+}
 
 export default [
   {
@@ -17,7 +31,11 @@ export default [
       }
     ],
     plugins: [
-      babel(babelParam)
+      babel(babelParam),
+      // LiveReroad
+      isWatch && serve(''),
+      isWatch && livereload({watch: 'dist/browser/PicoAudio.min.js'}),
+      isWatch && localserver()
     ]
   },
   {
