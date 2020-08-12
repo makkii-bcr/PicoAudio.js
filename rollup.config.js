@@ -33,7 +33,7 @@ export default function () {
         babel(babelParam),
         // LiveReroad
         isWatch && serve(''),
-        isWatch && livereload({watch: 'dist/browser/PicoAudio.js'}),
+        isWatch && livereload({watch: ['dist/browser/PicoAudio.js', 'sample']}),
         isWatch && url()
       ]
     },
