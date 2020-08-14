@@ -770,7 +770,7 @@ function play(isSongLooping) {
     const states = this.states;
 
     // Chrome Audio Policy 対策 //
-    context.resume();
+    if (context.resume) context.resume();
 
     // 再生中の場合、処理しない //
     if (states.isPlaying) return;

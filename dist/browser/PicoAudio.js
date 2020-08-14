@@ -1080,7 +1080,7 @@ var PicoAudio = (function () {
     var trigger = this.trigger;
     var states = this.states; // Chrome Audio Policy 対策 //
 
-    context.resume(); // 再生中の場合、処理しない //
+    if (context.resume) context.resume(); // 再生中の場合、処理しない //
 
     if (states.isPlaying) return; // WebMIDIの場合、少し待ってから再生する //
 
