@@ -388,7 +388,7 @@ export default function parseEvent(info) {
     }
 
     // 関数呼び出し元にデータを返す //
-    info.songLength = lastEventTime;
+    info.songLength = songLength;
     info.cc111Tick = cc111Tick;
     info.cc111Time = cc111Time;
     info.firstNoteOnTiming = firstNoteOnTiming;

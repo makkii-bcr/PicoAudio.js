@@ -256,7 +256,7 @@ class PicoAudio {
     }
     
     getDuration() {
-        return this.playData?.lastEventTime ?? 0;
+        return this.getTime(Number_MAX_SAFE_INTEGER);
     }
 }
 
