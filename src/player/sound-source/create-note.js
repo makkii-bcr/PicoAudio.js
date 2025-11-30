@@ -326,7 +326,11 @@ export default function createNote(option) {
             gainNode.gain.setTargetAtTime(0, note.stop, releaseClamped / 3);
 
             this.stopAudioNode(oscillator, note.stop + releaseClamped, stopGainNode, isNoiseCut);
-            break
+            break;
+
+        default:
+            this.stopAudioNode(oscillator, note.stop, stopGainNode, isNoiseCut);
+            break;
     }
 
     // 音をストップさせる関数を返す //
