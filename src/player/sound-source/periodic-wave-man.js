@@ -453,7 +453,7 @@ export function getKSSampler(context, instId, octave = 2) {
             Math.max(2, Math.round(context.sampleRate / targetFrequency / inst.data.length)),
             512
         );
-        console.log(lengthMul)
+        //console.log(lengthMul);
 
         // Generate samples using the Karplus-Strong sampler
         let samples = ksSampler(inst.data, context.sampleRate, 4, decay, lengthMul);

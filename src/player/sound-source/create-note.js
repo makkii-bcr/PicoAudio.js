@@ -219,7 +219,7 @@ export default function createNote(option) {
                 // Apply the vibrato effect to the oscillator
                 oscillator.detune.setValueCurveAtTime(vibratoSample, note.start, 10);
             } catch (e) {
-                console.error(e); // Log any errors
+                //console.error(e); // Log any errors
             }
 
             gainNode.gain.setValueAtTime(0, note.start);
